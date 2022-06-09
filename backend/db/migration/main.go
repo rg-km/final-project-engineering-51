@@ -17,7 +17,7 @@ func main() {
 	fullname varchar(255) not null,
     username varchar(255) not null,
     password varchar(255) not null,
-    loggedin boolean not null,
+    loggedin boolean not null
 );`)
 
 	if err != nil {

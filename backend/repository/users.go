@@ -3,6 +3,9 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"log"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 
@@ -21,6 +24,7 @@ func (u *UserRepository) FetchUserByID(id int64) (*User, error) {
 	row := u.db.QueryRow(sqlStatement, id)
 	err := row.Scan(
 		&user.ID,
+		&user.Fullname,
 		&user.Username,
 		&user.Password,
 		&user.Loggedin,
@@ -51,6 +55,7 @@ func (u *UserRepository) FetchUsers() ([]User, error) {
 
 		err := rows.Scan(
 			&user.ID,
+			&user.Fullname,
 			&user.Username,
 			&user.Password,
 			&user.Loggedin,
@@ -76,6 +81,17 @@ func (u *UserRepository) ChangeStatus(status bool, id int64) error {
 	return nil
 }
 
+func compareHashPassword(hashpass, pass string) bool {
+	byteHash := []byte(hashpass)
+	err := bcrypt.CompareHashAndPassword(byteHash,[]byte(pass))
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+
+	return true
+}
+
 func (u *UserRepository) Login(username string, password string) (*string, error) {
 
 	users, err := u.FetchUsers()
@@ -86,7 +102,7 @@ func (u *UserRepository) Login(username string, password string) (*string, error
 
 	for _, user := range users {
 		if user.Username == username {
-			if user.Password == password {
+			if compareHashPassword(user.Password, password) {
 				u.ChangeStatus(true, user.ID)
 				return &user.Username, nil
 			} else {
@@ -97,15 +113,49 @@ func (u *UserRepository) Login(username string, password string) (*string, error
 	return nil, errors.New("username atau password anda tidak valid") // TODO: replace this
 }
 
-func (u *UserRepository) InsertUser(username string, password string, role string, loggedin bool) error {
-	sqlStatement := `INSERT INTO users (username, password, loggedin) 
+func hashPassword(password []byte) string {
+	
+	hash, err := bcrypt.GenerateFromPassword(password, bcrypt.MinCost)
+	if err != nil {
+		panic("Failed to hash password")
+	}
+	return string(hash)
+}
+
+func(u *UserRepository) IsDuplicateUsername(username string)bool {
+	users, _ := u.FetchUsers()
+
+	for _,user := range users {
+		if user.Username == username {
+			return true
+		}
+	}
+
+	return false
+}
+
+func(u *UserRepository) IsDuplicatePass(password string)bool {
+	users, _ := u.FetchUsers()
+
+	for _,user := range users {
+		if compareHashPassword(user.Password, password) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (u *UserRepository) InsertUser(username string, password string, role string, loggedin bool) (*string, error) {
+	hashPassword := hashPassword([]byte(password))
+	sqlStatement := `INSERT INTO users (fullname, username, password, loggedin) 
 	VALUES (?, ?, ?, ?)`
 
-	_, err := u.db.Exec(sqlStatement, username, password, loggedin)
+	_, err := u.db.Exec(sqlStatement, username, hashPassword, loggedin)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil // TODO: replace this
+	return &username ,nil // TODO: replace this
 }
 
 
