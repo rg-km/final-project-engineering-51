@@ -69,10 +69,10 @@ func (u *UserRepository) FetchUsers() ([]User, error) {
 	return users, nil // TODO: replace this
 }
 
-func (u *UserRepository) ChangeStatus(status bool, id int64) error {
-	sqlStmt := `UPDATE users SET loggedin = ? WHERE id = ?`
+func (u *UserRepository) ChangeStatus(status bool, username string) error {
+	sqlStmt := `UPDATE users SET loggedin = ? WHERE username = ?`
 
-	_,err := u.db.Exec(sqlStmt, status, id)
+	_,err := u.db.Exec(sqlStmt, status, username)
 
 	if err != nil {
 		return err
@@ -103,7 +103,7 @@ func (u *UserRepository) Login(username string, password string) (*string, error
 	for _, user := range users {
 		if user.Username == username {
 			if compareHashPassword(user.Password, password) {
-				u.ChangeStatus(true, user.ID)
+				u.ChangeStatus(true, user.Username)
 				return &user.Username, nil
 			} else {
 				return nil, errors.New("username atau password anda tidak valid")
@@ -146,12 +146,12 @@ func(u *UserRepository) IsDuplicatePass(password string)bool {
 	return false
 }
 
-func (u *UserRepository) InsertUser(username string, password string, role string, loggedin bool) (*string, error) {
+func (u *UserRepository) InsertUser(fullname string, username string, password string) (*string, error) {
 	hashPassword := hashPassword([]byte(password))
 	sqlStatement := `INSERT INTO users (fullname, username, password, loggedin) 
-	VALUES (?, ?, ?, ?)`
+	VALUES (?, ?, ?, false)`
 
-	_, err := u.db.Exec(sqlStatement, username, hashPassword, loggedin)
+	_, err := u.db.Exec(sqlStatement, fullname, username, hashPassword)
 	if err != nil {
 		return nil, err
 	}

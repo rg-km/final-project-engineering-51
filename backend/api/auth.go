@@ -15,7 +15,7 @@ type LoginDTO struct {
 }
 
 type RegisterDTO struct {
-	Fullname string `json:"fullname" form:"password" binding:"required" validate:"min:1"`
+	Fullname string `json:"fullname" form:"fullname" binding:"required" validate:"min:1"`
 	Username string `json:"username" form:"username" binding:"required"`
 	Password string `json:"password" form:"password" binding:"required" validate:"min:6"`
 }
@@ -81,6 +81,7 @@ func (api *API) login(w http.ResponseWriter, req *http.Request) {
 
 	// Buat jwt string dari token yang sudah dibuat menggunakan JWT key yang telah dideklarasikan
 	tokenString, err := token.SignedString(secretKey)
+	
 	if err != nil {
 		// return internal error ketika ada kesalahan ketika pembuatan JWT string
 		w.WriteHeader(http.StatusInternalServerError)
@@ -100,7 +101,7 @@ func (api *API) login(w http.ResponseWriter, req *http.Request) {
 
 func (api *API) logout(w http.ResponseWriter, req *http.Request) {
 	api.AllowOrigin(w, req)
-
+	
 	token, err := req.Cookie("token")
 	if err != nil {
 		if err == http.ErrNoCookie {
@@ -112,6 +113,7 @@ func (api *API) logout(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	
 	if token.Value == "" {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
@@ -150,10 +152,11 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	res, err := api.usersRepo.InsertUser(user.Fullname, user.Username, user.Password, false)
+	res, err := api.usersRepo.InsertUser(user.Fullname, user.Username, user.Password)
 	if err != nil {
 		encoder.Encode(AuthErrorResponse{Error: err.Error()})
 		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 
 	// Deklarasi expiry time untuk token jwt
