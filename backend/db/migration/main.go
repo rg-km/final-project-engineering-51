@@ -1,8 +1,9 @@
 package main
 
 import (
-	 "database/sql"
-	 _ "github.com/mattn/go-sqlite3"
+	"database/sql"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
@@ -19,6 +20,8 @@ func main() {
     password varchar(255) not null,
     loggedin boolean not null
 );`)
+
+
 
 	if err != nil {
 		panic(err)

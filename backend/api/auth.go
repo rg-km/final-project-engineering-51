@@ -20,7 +20,12 @@ type RegisterDTO struct {
 	Password string `json:"password" form:"password" binding:"required" validate:"min:6"`
 }
 
-type AuthSuccessResponse struct {
+type LoginSuccessResponse struct {
+	Username string `json:"username"`
+	Token    string `json:"token"`
+}
+
+type RegisterSuccessResponse struct {
 	Username string `json:"username"`
 	Token    string `json:"token"`
 }
@@ -80,7 +85,7 @@ func (api *API) login(w http.ResponseWriter, req *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Buat jwt string dari token yang sudah dibuat menggunakan JWT key yang telah dideklarasikan
-	tokenString, err := token.SignedString(secretKey)
+	tokenString, err := token.SignedString([]byte(secretKey))
 	
 	if err != nil {
 		// return internal error ketika ada kesalahan ketika pembuatan JWT string
@@ -96,7 +101,7 @@ func (api *API) login(w http.ResponseWriter, req *http.Request) {
 		Path:    "/",
 	})
 
-	json.NewEncoder(w).Encode(AuthSuccessResponse{Username: *res, Token: tokenString})
+	json.NewEncoder(w).Encode(LoginSuccessResponse{Username: *res, Token: tokenString})
 }
 
 func (api *API) logout(w http.ResponseWriter, req *http.Request) {
@@ -146,7 +151,7 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if api.usersRepo.IsDuplicateUsername(user.Password) {
+	if api.usersRepo.IsDuplicatePass(user.Password) {
 		encoder.Encode(AuthErrorResponse{Error: "password is already exist"})
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -176,7 +181,7 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Buat jwt string dari token yang sudah dibuat menggunakan JWT key yang telah dideklarasikan
-	tokenString, err := token.SignedString(secretKey)
+	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
 		// return internal error ketika ada kesalahan ketika pembuatan JWT string
 		w.WriteHeader(http.StatusInternalServerError)
@@ -191,6 +196,6 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 		Path:    "/",
 	})
 
-	json.NewEncoder(w).Encode(AuthSuccessResponse{Username: *res, Token: tokenString})
+	json.NewEncoder(w).Encode(RegisterSuccessResponse{Username: *res, Token: tokenString})
 	w.WriteHeader(http.StatusCreated)
 }
