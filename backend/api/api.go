@@ -30,7 +30,7 @@ func NewAPI(usersRepo repository.UserRepository) API {
 	// mux.Handle("/api/pay", api.POST(api.AuthMiddleWare(http.HandlerFunc(api.pay))))
 
 	// // API with AuthMiddleware and AdminMiddleware
-	// mux.Handle("/api/admin/sales", api.GET(api.AuthMiddleWare(api.AdminMiddleware(http.HandlerFunc(api.getDashboard)))))
+	mux.Handle("/api/admin/users", api.GET(api.AuthMiddleWare(api.AdminMiddleware(http.HandlerFunc(api.userList)))))
 
 	return api
 }

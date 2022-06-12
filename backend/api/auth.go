@@ -10,23 +10,24 @@ import (
 )
 
 type LoginDTO struct {
-	Username string `json:"username" form:"username" binding:"required"`
-	Password string `json:"password" form:"password" binding:"required" validate:"min:6"`
+	Email string `json:"email" form:"email" binding:"required,email"`
+	Password string `json:"password" form:"password" binding:"required"`
 }
 
 type RegisterDTO struct {
-	Fullname string `json:"fullname" form:"fullname" binding:"required" validate:"min:1"`
-	Username string `json:"username" form:"username" binding:"required"`
-	Password string `json:"password" form:"password" binding:"required" validate:"min:6"`
+	Fullname string `json:"fullname" form:"fullname" binding:"required"`
+	Email string `json:"email" form:"email" binding:"required,email"`
+	Password string `json:"password" form:"password" binding:"required"`
+	Role string `json:"role" form:"role" binding:"required"`
 }
 
 type LoginSuccessResponse struct {
-	Username string `json:"username"`
+	Email string `json:"email"`
 	Token    string `json:"token"`
 }
 
 type RegisterSuccessResponse struct {
-	Username string `json:"username"`
+	Email string `json:"email"`
 	Token    string `json:"token"`
 }
 
@@ -35,7 +36,8 @@ type AuthErrorResponse struct {
 }
 
 type Claims struct {
-	Username string
+	Email string
+	Role string
 	jwt.StandardClaims
 }
 
@@ -57,7 +59,7 @@ func (api *API) login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	res, err := api.usersRepo.Login(user.Username, user.Password)
+	res, err := api.usersRepo.Login(user.Email, user.Password)
 
 	w.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
@@ -67,13 +69,14 @@ func (api *API) login(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-
+	userRole, _ := api.usersRepo.FetchUserRole(*res)
 	// Deklarasi expiry time untuk token jwt
 	expirationTime := time.Now().Add(60 * time.Minute)
 
 	// Buat claim menggunakan variable yang sudah didefinisikan diatas
 	claims := &Claims{
-		Username: *res,
+		Email: *res,
+		Role: *userRole,
 		StandardClaims: jwt.StandardClaims{
 			// expiry time menggunakan time millisecond
 			ExpiresAt: expirationTime.Unix(),
@@ -101,7 +104,7 @@ func (api *API) login(w http.ResponseWriter, req *http.Request) {
 		Path:    "/",
 	})
 
-	json.NewEncoder(w).Encode(LoginSuccessResponse{Username: *res, Token: tokenString})
+	json.NewEncoder(w).Encode(LoginSuccessResponse{Email: *res, Token: tokenString})
 }
 
 func (api *API) logout(w http.ResponseWriter, req *http.Request) {
@@ -146,8 +149,8 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	encoder := json.NewEncoder(w)
 
-	if api.usersRepo.IsDuplicateUsername(user.Username) {
-		encoder.Encode(AuthErrorResponse{Error: "username is already exist"})
+	if api.usersRepo.IsDuplicateEmail(user.Email) {
+		encoder.Encode(AuthErrorResponse{Error: "email is already exist"})
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -157,7 +160,7 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	res, err := api.usersRepo.InsertUser(user.Fullname, user.Username, user.Password)
+	res, err := api.usersRepo.InsertUser(user.Fullname, user.Email, user.Password, user.Role)
 	if err != nil {
 		encoder.Encode(AuthErrorResponse{Error: err.Error()})
 		w.WriteHeader(http.StatusBadRequest)
@@ -169,7 +172,8 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 
 	// Buat claim menggunakan variable yang sudah didefinisikan diatas
 	claims := &Claims{
-		Username: *res,
+		Email: *res,
+		Role: user.Role,
 		StandardClaims: jwt.StandardClaims{
 			// expiry time menggunakan time millisecond
 			ExpiresAt: expirationTime.Unix(),
@@ -196,6 +200,6 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 		Path:    "/",
 	})
 
-	json.NewEncoder(w).Encode(RegisterSuccessResponse{Username: *res, Token: tokenString})
+	json.NewEncoder(w).Encode(RegisterSuccessResponse{Email: *res, Token: tokenString})
 	w.WriteHeader(http.StatusCreated)
 }

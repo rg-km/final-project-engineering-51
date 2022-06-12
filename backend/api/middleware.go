@@ -1,8 +1,11 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 func (api *API) AllowOrigin(w http.ResponseWriter, req *http.Request) {
@@ -42,6 +45,77 @@ func (api *API) POST(next http.Handler) http.Handler {
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusMethodNotAllowed)
 			encoder.Encode(AuthErrorResponse{Error: "Need POST Method!"})
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+func (api *API) AuthMiddleWare(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		api.AllowOrigin(w, r)
+		encoder := json.NewEncoder(w)
+		// Ambil token dari cookie yang dikirim ketika request
+		c, err := r.Cookie("token")
+		if err != nil {
+			if err == http.ErrNoCookie {
+				// return unauthorized ketika token kosong
+				w.WriteHeader(http.StatusUnauthorized)
+				encoder.Encode(AuthErrorResponse{Error: err.Error()})
+				return
+			}
+			// return bad request ketika field token tidak ada
+			w.WriteHeader(http.StatusBadRequest)
+			encoder.Encode(AuthErrorResponse{Error: err.Error()})
+			return
+		}
+
+		tknStr := c.Value
+
+		claims := &Claims{}
+
+		secretKey := getSecretKey()
+		//parse JWT token ke dalam claim
+		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(secretKey), nil
+		})
+
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				// return unauthorized ketika signature invalid
+				w.WriteHeader(http.StatusUnauthorized)
+				encoder.Encode(AuthErrorResponse{Error: err.Error()})
+				return
+			}
+			// return bad request ketika field token tidak ada
+			w.WriteHeader(http.StatusBadRequest)
+			encoder.Encode(AuthErrorResponse{Error: err.Error()})
+			return
+		}
+
+		//return unauthorized ketika token sudah tidak valid (biasanya karna token expired)
+		if !tkn.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			encoder.Encode(AuthErrorResponse{Error: err.Error()})
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), "email", claims.Email)
+		ctx = context.WithValue(ctx, "role", claims.Role)
+		ctx = context.WithValue(ctx, "props", claims)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
+func (api *API) AdminMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		api.AllowOrigin(w, r)
+		encoder := json.NewEncoder(w)
+		role := r.Context().Value("role")
+		if role != "admin" {
+			w.WriteHeader(http.StatusForbidden)
+			encoder.Encode(AuthErrorResponse{Error: "forbidden access"})
 			return
 		}
 

@@ -16,8 +16,9 @@ func main() {
 	CREATE TABLE IF NOT EXISTS users (
     id integer not null primary key AUTOINCREMENT,
 	fullname varchar(255) not null,
-    username varchar(255) not null,
+    email varchar(255) not null,
     password varchar(255) not null,
+	role varchar(255) not null,
     loggedin boolean not null
 );`)
 
