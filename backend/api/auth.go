@@ -109,21 +109,61 @@ func (api *API) login(w http.ResponseWriter, req *http.Request) {
 
 func (api *API) logout(w http.ResponseWriter, req *http.Request) {
 	api.AllowOrigin(w, req)
-	
+	encoder := json.NewEncoder(w)
 	token, err := req.Cookie("token")
 	if err != nil {
 		if err == http.ErrNoCookie {
 			// return unauthorized ketika token kosong
 			w.WriteHeader(http.StatusUnauthorized)
+			encoder.Encode(AuthErrorResponse{Error: err.Error()})
 			return
 		}
 		// return bad request ketika field token tidak ada
 		w.WriteHeader(http.StatusBadRequest)
+		encoder.Encode(AuthErrorResponse{Error: err.Error()})
 		return
 	}
 	
 	if token.Value == "" {
 		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	
+	tknStr := token.Value
+
+		claims := &Claims{}
+
+		secretKey := getSecretKey()
+		//parse JWT token ke dalam claim
+		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+			return []byte(secretKey), nil
+		})
+
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				// return unauthorized ketika signature invalid
+				w.WriteHeader(http.StatusUnauthorized)
+				encoder.Encode(AuthErrorResponse{Error: err.Error()})
+				return
+			}
+			// return bad request ketika field token tidak ada
+			w.WriteHeader(http.StatusBadRequest)
+			encoder.Encode(AuthErrorResponse{Error: err.Error()})
+			return
+		}
+
+		//return unauthorized ketika token sudah tidak valid (biasanya karna token expired)
+		if !tkn.Valid {
+			w.WriteHeader(http.StatusUnauthorized)
+			encoder.Encode(AuthErrorResponse{Error: err.Error()})
+			return
+		}
+	
+	err = api.usersRepo.ChangeStatus(false, claims.Email)
+
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		encoder.Encode(AuthErrorResponse{Error: err.Error()})
 		return
 	}
 

@@ -72,10 +72,10 @@ func (u *UserRepository) FetchUsers() ([]User, error) {
 	return users, nil // TODO: replace this
 }
 
-func (u *UserRepository) ChangeStatus(status bool, id int64) error {
-	sqlStmt := `UPDATE users SET loggedin = ? WHERE id = ?`
+func (u *UserRepository) ChangeStatus(status bool, email string) error {
+	sqlStmt := `UPDATE users SET loggedin = ? WHERE email = ?`
 
-	_,err := u.db.Exec(sqlStmt, status, id)
+	_,err := u.db.Exec(sqlStmt, status, email)
 
 	if err != nil {
 		return err
@@ -106,7 +106,10 @@ func (u *UserRepository) Login(email string, password string) (*string, error) {
 	for _, user := range users {
 		if user.Email == email {
 			if compareHashPassword(user.Password, password) {
-				u.ChangeStatus(true, user.ID)
+				err := u.ChangeStatus(true, user.Email)
+				if err != nil {
+					return nil, err
+				}
 				return &user.Email, nil
 			} else {
 				return nil, errors.New("email atau password anda tidak valid")
