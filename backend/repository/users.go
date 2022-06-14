@@ -3,6 +3,10 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"log"
+	"regexp"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 
@@ -21,8 +25,10 @@ func (u *UserRepository) FetchUserByID(id int64) (*User, error) {
 	row := u.db.QueryRow(sqlStatement, id)
 	err := row.Scan(
 		&user.ID,
-		&user.Username,
+		&user.Fullname,
+		&user.Email,
 		&user.Password,
+		&user.Role,
 		&user.Loggedin,
 	)
 
@@ -51,8 +57,10 @@ func (u *UserRepository) FetchUsers() ([]User, error) {
 
 		err := rows.Scan(
 			&user.ID,
-			&user.Username,
+			&user.Fullname,
+			&user.Email,
 			&user.Password,
+			&user.Role,
 			&user.Loggedin,
 		)
 		if err != nil {
@@ -64,10 +72,10 @@ func (u *UserRepository) FetchUsers() ([]User, error) {
 	return users, nil // TODO: replace this
 }
 
-func (u *UserRepository) ChangeStatus(status bool, id int64) error {
-	sqlStmt := `UPDATE users SET loggedin = ? WHERE id = ?`
+func (u *UserRepository) ChangeStatus(status bool, email string) error {
+	sqlStmt := `UPDATE users SET loggedin = ? WHERE email = ?`
 
-	_,err := u.db.Exec(sqlStmt, status, id)
+	_,err := u.db.Exec(sqlStmt, status, email)
 
 	if err != nil {
 		return err
@@ -76,7 +84,18 @@ func (u *UserRepository) ChangeStatus(status bool, id int64) error {
 	return nil
 }
 
-func (u *UserRepository) Login(username string, password string) (*string, error) {
+func compareHashPassword(hashpass, pass string) bool {
+	byteHash := []byte(hashpass)
+	err := bcrypt.CompareHashAndPassword(byteHash,[]byte(pass))
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+
+	return true
+}
+
+func (u *UserRepository) Login(email string, password string) (*string, error) {
 
 	users, err := u.FetchUsers()
 
@@ -85,32 +104,80 @@ func (u *UserRepository) Login(username string, password string) (*string, error
 	}
 
 	for _, user := range users {
-		if user.Username == username {
-			if user.Password == password {
-				u.ChangeStatus(true, user.ID)
-				return &user.Username, nil
+		if user.Email == email {
+			if compareHashPassword(user.Password, password) {
+				err := u.ChangeStatus(true, user.Email)
+				if err != nil {
+					return nil, err
+				}
+				return &user.Email, nil
 			} else {
-				return nil, errors.New("username atau password anda tidak valid")
+				return nil, errors.New("email atau password anda tidak valid")
 			}
 		}
 	}
-	return nil, errors.New("username atau password anda tidak valid") // TODO: replace this
+	return nil, errors.New("email atau password anda tidak valid") // TODO: replace this
 }
 
-func (u *UserRepository) InsertUser(username string, password string, role string, loggedin bool) error {
-	sqlStatement := `INSERT INTO users (username, password, loggedin) 
-	VALUES (?, ?, ?, ?)`
-
-	_, err := u.db.Exec(sqlStatement, username, password, loggedin)
+func hashPassword(password []byte) string {
+	
+	hash, err := bcrypt.GenerateFromPassword(password, bcrypt.MinCost)
 	if err != nil {
-		return err
+		panic("Failed to hash password")
 	}
-	return nil // TODO: replace this
+	return string(hash)
+}
+
+func(u *UserRepository) IsDuplicateEmail(email string)bool {
+	users, _ := u.FetchUsers()
+
+	for _,user := range users {
+		if user.Email == email {
+			return true
+		}
+	}
+
+	return false
+}
+
+func(u *UserRepository) IsDuplicatePass(password string)bool {
+	users, _ := u.FetchUsers()
+
+	for _,user := range users {
+		if compareHashPassword(user.Password, password) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func isEmailValid(e string) bool {
+    emailRegex := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+    return emailRegex.MatchString(e)
+}
+
+func (u *UserRepository) InsertUser(fullname string, email string, password string, role string) (*string, error) {
+	hashPassword := hashPassword([]byte(password))
+
+	if isEmailValid(email){
+		sqlStatement := `INSERT INTO users (fullname, email, password, role, loggedin) 
+		VALUES (?, ?, ?, ?, false)`
+	
+		_, err := u.db.Exec(sqlStatement, fullname, email, hashPassword, role)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, errors.New("format email anda salah (example@gmail.com)")
+	}
+	
+	return &email ,nil // TODO: replace this
 }
 
 
 func (u *UserRepository) FindLoggedInUser() ([]string,error) {
-	sqlStmt := `SELECT username FROM users WHERE loggedin = true`
+	sqlStmt := `SELECT email FROM users WHERE loggedin = true`
 
 	row, err := u.db.Query(sqlStmt)
 
@@ -120,19 +187,36 @@ func (u *UserRepository) FindLoggedInUser() ([]string,error) {
 
 	defer row.Close()
 
-	var usernames []string
+	var emails []string
 	for row.Next() {
-		var username string
+		var email string
 
-		err := row.Scan(&username)
+		err := row.Scan(&email)
 
 		if err  != nil {
 			return nil, err
 		}
 
-		usernames = append(usernames, username)
+		emails = append(emails, email)
 	}
 
-	return usernames, nil
+	return emails, nil
 } 
+
+func (u *UserRepository) FetchUserRole(email string) (*string, error) {
+	sqlStatement := `SELECT role FROM users WHERE email = ?`
+
+	row := u.db.QueryRow(sqlStatement, email)
+	var role string 
+
+	err := row.Scan(
+		&role,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &role, nil // TODO: replace this
+}
 
