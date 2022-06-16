@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	//"fmt"
 
 	"github.com/rg-km/final-project-engineering-51/backend/api"
 	"github.com/rg-km/final-project-engineering-51/backend/repository"
@@ -17,8 +17,7 @@ func main() {
 	}
 
 	usersRepo := repository.NewUserRepository(db)
-	rows, err := usersRepo.FetchUsers()
-	fmt.Println(rows)
+
 
 	mainAPI := api.NewAPI(*usersRepo)
 	mainAPI.Start()
