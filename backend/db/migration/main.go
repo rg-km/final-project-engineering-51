@@ -28,6 +28,14 @@ func main() {
     desc text NOT NULL
 );
 
+	CREATE TABLE IF NOT EXISTS  soal(
+    id integer NOT NULL primary key AUTOINCREMENT,
+	no_soal integer NOT NULL,
+	kategori_id integer NOT NULL,
+	desc_soal text NOT NULL,
+	FOREIGN KEY (kategori_id) REFERENCES kategori(id)
+);
+
 	INSERT INTO kategori (nama, desc) VALUES 
 ("Realistic", 
 "Kamu sangat senang memecahkan suatu masalah, terutama hal yang praktis dan masuk akal. Kamu menyukai pekerjaan yang berhubungan dengan tumbuhan, hewan, peralatan, dan mekanik.
@@ -67,9 +75,69 @@ Profesi yang cocok untukmu di antaranya adalah Pengacara, Psikolog Industri dan 
 
 Kamu juga orang yang sangat teliti dan pasti, sehingga dalam melakukan kegiatan apapun, kamu harus membuat daftar terlebih dahulu agar semua kegiatanmu dapat terkontrol dengan baik.
 
-Profesi yang cocok untukmu di antaranya adalah Akuntan, Aktuaris, Ahli Statistik, Analis Keuangan, Guru, Operator komputer, Pustakawan, Programer Bisnis, Pengarsip, dan pekerjaan yang berhubungan dengan administrasi.");`)
+Profesi yang cocok untukmu di antaranya adalah Akuntan, Aktuaris, Ahli Statistik, Analis Keuangan, Guru, Operator komputer, Pustakawan, Programer Bisnis, Pengarsip, dan pekerjaan yang berhubungan dengan administrasi.");
 
-
+	INSERT INTO soal (no_soal, kategori_id, desc_soal) VALUES
+(1, 1, "Saya tidak suka hal yang kompleks"),
+(2, 1, "Saya suka membangun sesuatu"),
+(3, 1, "Saya suka merawat hewan")
+(4, 1, "Saya suka menyatukan sesuatu atau merakit sesuatu"),
+(5, 1, "Saya suka memasak"),
+(6, 1, "Saya orang yang prktis (suka yang simple)"),
+(7, 1, "Saya suka bekera di luar ruangan (Outdoor)"),
+(8, 1, "Saya orang yang jujur"),
+(9, 1, "Saya suka bersosialisasi"),
+(10, 1, "Saya suka dengan tugas-tugas yang kongkrit"),
+(11, 2, "Saya suka mengerjakan puzzle"),
+(12, 2, "Saya suka melakukan eksperimen"),
+(13, 2, "Saya suka dengan sesuatu yang berhubungan dengan sains"),
+(14, 2, "Says senang mencoba mencari tahu bagaimana segaka sesuatu itu berjalan"),
+(15, 2, "Saya suka menganalisis berbagai hal (masalah/situasi) dan mengevaluasi"),
+(16, 2, "Saya suka bekerja dengan angka atau bagan (matematis)"),
+(17, 2, "Saya pandai matematika"),
+(18, 2, "Saya orangnya disiplin"),
+(19, 2, "Saya orangnya sistematis"),
+(20, 2, "Saya suka menjabarkan sesuaru secar teratur dan logis"),
+(21, 3, "Saya lebih suka bekerja secara mandiri"),
+(22, 3, "Saya suka membaca tentang seni dan music"),
+(23, 3, "Saya suka menulis (dengan kreatif)"),
+(24, 3, "Saya adalah orang yang kreatif"),
+(25, 3, "Saya suka memaikan alat musik atau bernyanyi"),
+(26, 3, "Saya suka aklting dalam drama"),
+(27, 3, "Saya suka menggambar"),
+(28, 3, "Saya suka berfikir abstrak"),
+(29, 3, "Saya orangnya imajinatif"),
+(30, 3, "Saya tidak suka keteraturan"),
+(31, 4, "Saya suka bekerja dealam tim"),
+(32, 4, "Saya suka mengajar atau melatih orang lain"),
+(33, 4, "Saya suka mencoba mambantu orang yang memcahkan masalah mereka"),
+(34, 4, "Saya tertarik menyembuhkan orang"),
+(35, 4, "Saya senang belajar tentang budaya"),
+(36, 4, "Saya suka berdiskusi tentang suatu masalah"),
+(37, 4, "Saya suka membantu orang"),
+(38, 4, "Saya orangnya bersahabat dan mudah bergaul"),
+(39, 4, "Saya orangnya bertanggungjawab"),
+(40, 4, "Saya orangnya dengan rasa toleransi yang tinggi"),
+(41, 5, "Saya adalah orang yang ambisius, saya menetapkan tujuan saya sendiri"),
+(42, 5, "Saya suka mencoba mempengaruhi atau membujuk orang"),
+(43, 5, "Saya suka berjualan"),
+(44, 5, "Saya cepat mengambil tanggung jawab baru"),
+(45, 5, "Saya ingin memulai bisnis saya sendiri"),
+(46, 5, "Saya suka memimpin"),
+(47, 5, "Saya sika berpidato"),
+(48, 5, "Saya orangnya mudah beradaptasi"),
+(49, 5, "Saya orangnya suka mengambil resiko dan spontan"),
+(50, 5, "Saya orangnya percaya diri, tegas, dan juga mampu mengutarakan sesuatu yang ada di hati dan pikiran saya tetapi tetap terkontrol"),
+(51, 6, "Saya suka mengatur sesuatu (file, mea/kantor)"),
+(52, 6, "Saya ingin memiliki instruksi yang jelas untuk diikuti"),
+(53, 6, "Saya tidak keberatan bekerja 8 jam sehari di kantor"),
+(54, 6, "Saya memperhatikan sesuatu secara detail"),
+(55, 6, "Saya suka melakukan pengarsipan atau pengetikan"),
+(56, 6, "Saya pandai menyimpan catatan pekerjann saya"),
+(57, 6, "Saya ingin bekera di kantor"),
+(58, 6, "Saya orangnya tidak kreatif"),
+(59, 6, "Saya suka dengan kedisiplinan dan ketepatan"),
+(60, 6, "Saya mempunyai kemampuan klerikal dan numeric yang baik");`)
 
 	if err != nil {
 		panic(err)
