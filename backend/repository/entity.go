@@ -10,3 +10,8 @@ type User struct {
 	Token    string
 }
 
+type Soal struct {
+	No int64 `db:"no_soal"`
+	Desc string `db:"desc_soal"`
+}
+

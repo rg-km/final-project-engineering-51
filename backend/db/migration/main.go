@@ -80,7 +80,7 @@ Profesi yang cocok untukmu di antaranya adalah Akuntan, Aktuaris, Ahli Statistik
 	INSERT INTO soal (no_soal, kategori_id, desc_soal) VALUES
 (1, 1, "Saya tidak suka hal yang kompleks"),
 (2, 1, "Saya suka membangun sesuatu"),
-(3, 1, "Saya suka merawat hewan")
+(3, 1, "Saya suka merawat hewan"),
 (4, 1, "Saya suka menyatukan sesuatu atau merakit sesuatu"),
 (5, 1, "Saya suka memasak"),
 (6, 1, "Saya orang yang prktis (suka yang simple)"),

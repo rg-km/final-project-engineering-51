@@ -9,13 +9,16 @@ import (
 
 type API struct {
 	usersRepo repository.UserRepository
+	soalRepo repository.SoalRepository
 	mux             *http.ServeMux
 }
 
-func NewAPI(usersRepo repository.UserRepository) API {
+func NewAPI(usersRepo repository.UserRepository, soalRepo repository.SoalRepository) API {
 	mux := http.NewServeMux()
 	api := API{
-		usersRepo,mux,
+		usersRepo,
+		soalRepo,
+		mux,
 	}
 
 	mux.Handle("/api/user/login", api.POST(http.HandlerFunc(api.login)))
@@ -23,7 +26,8 @@ func NewAPI(usersRepo repository.UserRepository) API {
 	mux.Handle("/api/user/register", api.POST(http.HandlerFunc(api.register)))
 
 	// API with AuthMiddleware:
-	// mux.Handle("/api/products", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.productList))))
+	mux.Handle("/api/soal", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.getSoal))))
+	mux.Handle("/api/user/profile", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.userProfile))))
 	// mux.Handle("/api/cart/add", api.POST(api.AuthMiddleWare(http.HandlerFunc(api.addToCart))))
 	// mux.Handle("/api/cart/clear", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.clearCart))))
 	// mux.Handle("/api/carts", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.cartList))))
