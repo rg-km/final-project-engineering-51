@@ -1,4 +1,5 @@
-import React ,{useState} from 'react';
+import React ,{ useState, useEffect } from 'react';
+import '@fontsource/dm-sans/400.css'
 import {
   Flex,
   Box,
@@ -18,6 +19,27 @@ function RegisterForm ()  {
   const [name,setName]=useState("")
   const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
+  const [cPassword, setCPassword] = useState('');
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [cPasswordClass, setCPasswordClass] = useState('form-control');
+  const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
+
+  useEffect(() => {
+    if (isCPasswordDirty) {
+        if (password === cPassword) {
+            setShowErrorMessage(false);
+            setCPasswordClass('form-control is-valid')
+        } else {
+            setShowErrorMessage(true)
+            setCPasswordClass('form-control is-invalid')
+        }
+    }
+  }, [cPassword, isCPasswordDirty, password]);
+
+  const handleCPassword = (e) => {
+    setCPassword(e.target.value);
+    setIsCPasswordDirty(true);
+  }
 
   async function signUp(){
     let item={name,email,password}
@@ -35,53 +57,89 @@ function RegisterForm ()  {
     console.warn("result",result)
   }
   return (
-    <Flex minHeight='100vh' width='full' align='center' justifyContent='center'>
-      
-      <Box 
-        px={4}
-        width='full'
-        maxWidth='500px'
-        borderRadius={8}
-        textAlign='center'
-        border={['npne', '1px']}
-        borderColor={['', 'gray.100']}
-        boxShadow="lg"
-      >
-      <Box my={8} textAlign='left'>
-        <form>
-          <Box textAlign='center'>
-            <Heading as='h4' size='md'>Daftar</Heading>
-            <Text>
-              Sudah punya akun? <Link href='LoginForm.js'color={`${VARIANT_COLOR}.500`}>Masuk</Link>
-            </Text>
-          </Box>
+    <Flex direction="column" alignItems="center" justifyContent='center'>
+      <Heading as='h2' size='xl'>
+       Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}.500`}>KenaliAku</Text>
+      </Heading>
+      <Flex  minHeight='120vh' width='full' align='center' justifyContent='center'>
+        <Box 
+          px={4}
+          width='full'
+          maxWidth='500px'
+          borderRadius={8}
+          textAlign='center'
+          border={['none', '1px']}
+          borderColor={['', 'gray.100']}
+          boxShadow="lg"
+        >
+        <Box my={8} textAlign='left'>
+          <form>
+            <Box textAlign='center'>
+              <Heading as='h4' size='md'>Daftar</Heading>
+              <Text>
+                Sudah punya akun? 
+                <Link 
+                  href='LoginForm.js'
+                  color={`${VARIANT_COLOR}.500`}
+                  >
+                    Masuk
+                </Link>
+              </Text>
+            </Box>
 
-          <FormControl isRequired mt={4}>
-            <FormLabel >Nama Lengkap</FormLabel>
-            <Input id='name' placeholder=' ' value={name} onChange={(e)=>setName(e.target.value)}/>
-          </FormControl>
+            <FormControl isRequired mt={4}>
+              <FormLabel >Nama Lengkap</FormLabel>
+              <Input 
+                id='name' 
+                placeholder=' ' 
+                value={name} 
+                onChange={(e)=>setName(e.target.value)}
+              />
+            </FormControl>
 
-          <FormControl isRequired mt={4}>
-            <FormLabel>Alamat Email</FormLabel>
-            <Input type='email' placeholder=' ' value={email} onChange={(e)=>setEmail(e.target.value)}/>
-          </FormControl>
-          
-          <FormControl isRequired mt={4}>
-            <FormLabel>Kata Sandi</FormLabel>
-            <Input id='password' type='password' placeholder=' ' value={password} onChange={(e)=>setPassword(e.target.value)}/>
-            <FormHelperText>Minimal 6 Karakter</FormHelperText>
-          </FormControl>
+            <FormControl isRequired mt={4}>
+              <FormLabel>Alamat Email</FormLabel>
+              <Input 
+                type='email' 
+                placeholder=' ' 
+                value={email} 
+                onChange={(e)=>setEmail(e.target.value)}
+              />
+            </FormControl>
+            
+            <FormControl isRequired mt={4}>
+              <FormLabel>Kata Sandi</FormLabel>
+              <Input 
+                id='password' 
+                type='password' 
+                placeholder=' ' 
+                value={password} 
+                onChange={(e)=>setPassword(e.target.value)}
+              />
+              <FormHelperText>Minimal 6 Karakter</FormHelperText>
+            </FormControl>
 
-          <FormControl isRequired mt={4}>
-            <FormLabel>Konfirmasi Kata Sandi</FormLabel>
-            <Input type='password' placeholder=' ' value={password} onChange={(e)=>setPassword(e.target.value)}/>
-          </FormControl>
+            <FormControl isRequired mt={4}>
+              <FormLabel>Konfirmasi Kata Sandi</FormLabel>
+              <Input 
+                type='password' 
+                className={cPasswordClass}
+                placeholder=' ' 
+                value={cPassword} 
+                onChange={handleCPassword}
+              />
+            </FormControl>
+            {showErrorMessage && isCPasswordDirty ? <div> Passwords did not match </div> : ''}
 
-          <Button onClick={signUp} colorScheme='red'  width='full' mt={6}>Daftar</Button>
-        </form>
-      </Box>
-      </Box>
+            <Button onClick={signUp} colorScheme='red'  width='full' mt={6}>Daftar</Button>
+          </form>
+        </Box>
+        </Box>
+      </Flex>
+      <div>
+        Copyright 2022 • All rights reserved • KenaliAku
+      </div>
     </Flex>
   )
 }
-export default  RegisterForm;
+export default  (RegisterForm);
