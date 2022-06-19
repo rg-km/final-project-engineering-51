@@ -1,4 +1,3 @@
-
 import Banner from './components/Banner';
 
 function App() {
