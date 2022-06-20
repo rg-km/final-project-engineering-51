@@ -12,8 +12,9 @@ import {
   Checkbox,
   Button
 } from '@chakra-ui/react';
+import Header from './Header'
 
-const VARIANT_COLOR = 'red';
+const VARIANT_COLOR = '#C73661';
 
 function LoginForm () {
   const [email,setEmail]=useState("");
@@ -35,9 +36,11 @@ async function login(){
 
 }
   return (
-    <Flex minHeight='90vh' direction="column" alignItems="center" justifyContent='center'>
+    <Flex direction="column" justifyContent='center'>
+      <Header/>
+      <br /><br /><br />
       <Heading as='h2' size='xl'>
-      Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}.500`}>KenaliAku</Text>
+      Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
       <Flex minHeight='90vh' width='full' align='center' justifyContent='center'>
         <Box 
@@ -91,6 +94,7 @@ async function login(){
       <div>
         Copyright 2022 • All rights reserved • KenaliAku
       </div>
+      <br /><br />
     </Flex>
   )
 }

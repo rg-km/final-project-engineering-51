@@ -1,5 +1,4 @@
 import React ,{ useState, useEffect } from 'react';
-import '@fontsource/dm-sans/400.css'
 import {
   Flex,
   Box,
@@ -12,8 +11,9 @@ import {
   Input,
   Button
 } from '@chakra-ui/react';
+import Header from './Header'
 
-const VARIANT_COLOR = 'red';
+const VARIANT_COLOR = '#C73661';
 
 function RegisterForm ()  {
   const [name,setName]=useState("")
@@ -57,9 +57,11 @@ function RegisterForm ()  {
     console.warn("result",result)
   }
   return (
-    <Flex direction="column" alignItems="center" justifyContent='center'>
+    <Flex direction="column" justifyContent='center'>
+      <Header/>
+      <br /><br /><br />
       <Heading as='h2' size='xl'>
-       Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}.500`}>KenaliAku</Text>
+       Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
       <Flex  minHeight='120vh' width='full' align='center' justifyContent='center'>
         <Box 
@@ -129,7 +131,7 @@ function RegisterForm ()  {
                 onChange={handleCPassword}
               />
             </FormControl>
-            {showErrorMessage && isCPasswordDirty ? <div> Passwords did not match </div> : ''}
+            {showErrorMessage && isCPasswordDirty ? <div> Kata Sandi Tidak Cocok </div> : ''}
 
             <Button onClick={signUp} colorScheme='red'  width='full' mt={6}>Daftar</Button>
           </form>
@@ -139,6 +141,7 @@ function RegisterForm ()  {
       <div>
         Copyright 2022 • All rights reserved • KenaliAku
       </div>
+      <br /><br />
     </Flex>
   )
 }
