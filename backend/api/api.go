@@ -10,31 +10,34 @@ import (
 type API struct {
 	usersRepo repository.UserRepository
 	soalRepo repository.SoalRepository
+	resultRepo repository.ResultRepository
 	mux             *http.ServeMux
 }
 
-func NewAPI(usersRepo repository.UserRepository, soalRepo repository.SoalRepository) API {
+func NewAPI(usersRepo repository.UserRepository, soalRepo repository.SoalRepository, resultRepo repository.ResultRepository) API {
 	mux := http.NewServeMux()
 	api := API{
 		usersRepo,
 		soalRepo,
+		resultRepo,
 		mux,
 	}
-
+	// User API
 	mux.Handle("/api/user/login", api.POST(http.HandlerFunc(api.login)))
 	mux.Handle("/api/user/logout", api.POST(http.HandlerFunc(api.logout)))
 	mux.Handle("/api/user/register", api.POST(http.HandlerFunc(api.register)))
+	mux.Handle("/api/user/profile", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.userProfile))))
 
 	// API with AuthMiddleware:
-	mux.Handle("/api/soal", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.getSoal))))
-	mux.Handle("/api/user/profile", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.userProfile))))
-	// mux.Handle("/api/cart/add", api.POST(api.AuthMiddleWare(http.HandlerFunc(api.addToCart))))
-	// mux.Handle("/api/cart/clear", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.clearCart))))
-	// mux.Handle("/api/carts", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.cartList))))
-	// mux.Handle("/api/pay", api.POST(api.AuthMiddleWare(http.HandlerFunc(api.pay))))
+	// Test Minat Bakat API :
+	mux.Handle("/api/test/soal", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.getSoal))))
+	mux.Handle("/api/test/submit", api.POST(api.AuthMiddleWare(http.HandlerFunc(api.submit))))
+	mux.Handle("/api/test/result", api.GET(api.AuthMiddleWare(http.HandlerFunc(api.getResult))))
 
 	// // API with AuthMiddleware and AdminMiddleware
+	// Admin API
 	mux.Handle("/api/admin/users", api.GET(api.AuthMiddleWare(api.AdminMiddleware(http.HandlerFunc(api.userList)))))
+	mux.Handle("/api/admin/nilai", api.GET(api.AuthMiddleWare(api.AdminMiddleware(http.HandlerFunc(api.getNilai)))))
 
 	return api
 }

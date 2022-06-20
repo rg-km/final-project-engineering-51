@@ -46,3 +46,4 @@ func(s *SoalRepository) FetchSoalByPage(page int)([]Soal, error) {
 
 	return soals, nil
 }
+

@@ -2,8 +2,7 @@ package main
 
 import (
 	"database/sql"
-
-
+	//"fmt"
 
 	"github.com/rg-km/final-project-engineering-51/backend/api"
 	"github.com/rg-km/final-project-engineering-51/backend/repository"
@@ -19,8 +18,9 @@ func main() {
 
 	usersRepo := repository.NewUserRepository(db)
 	soalRepo := repository.NewSoalRepository(db)
+	resultRepo := repository.NewResultRepository(db)
+	
 
-
-	mainAPI := api.NewAPI(*usersRepo, *soalRepo)
+	mainAPI := api.NewAPI(*usersRepo, *soalRepo, *resultRepo)
 	mainAPI.Start()
 }

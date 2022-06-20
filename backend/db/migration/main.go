@@ -137,7 +137,46 @@ Profesi yang cocok untukmu di antaranya adalah Akuntan, Aktuaris, Ahli Statistik
 (57, 6, "Saya ingin bekera di kantor"),
 (58, 6, "Saya orangnya tidak kreatif"),
 (59, 6, "Saya suka dengan kedisiplinan dan ketepatan"),
-(60, 6, "Saya mempunyai kemampuan klerikal dan numeric yang baik");`)
+(60, 6, "Saya mempunyai kemampuan klerikal dan numeric yang baik");
+
+CREATE TABLE IF NOT EXISTS  nilai(
+    id integer NOT NULL primary key AUTOINCREMENT,
+	user_id integer NOT NULL,
+	nilai_R varchar(255),
+	nilai_I varchar(255),
+	nilai_A varchar(255),
+	nilai_S varchar(255),
+	nilai_E varchar(255),
+	nilai_C varchar(255),
+	FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS saranjurusan(
+	id integer NOT NULL primary key AUTOINCREMENT,
+	kategori_id integer NOT NULL,
+	saran_1 varchar(255),
+	saran_2 varchar(255),
+	saran_3 varchar(255),
+	saran_4 varchar(255),
+	FOREIGN KEY (kategori_id) REFERENCES kategori(id)
+);
+
+INSERT INTO saranjurusan (kategori_id, saran_1, saran_2, saran_3, saran_4) VALUES
+(1, "Teknik Pertambangan", "Ilmu Keolahragaan", "Kehutanan", "Teknik Mesin"),
+(2, "Psikologi", "Sistem Informasi", "Kedokteran", "Ilmu Ekonomi"),
+(3, "Jurnalistik", "Seni Musik", "Teknik Arsitektur", "Design Komunikasi Visual"),
+(4, "Sosiologi", "Ilmu Keperawatan", "Pariwisata", "Ilmu Keguruan dan Pendidikan"),
+(5, "Manajemen", "Hubungan Internasional", "Hukum", "Hubungan Masyarakat"),
+(6, "Akuntansi", "Ilmu Statistika", "Data Analyst", "Administrasi Perkantoran");
+
+CREATE TABLE IF NOT EXISTS hasil(
+	id integer NOT NULL primary key AUTOINCREMENT,
+	user_id integer NOT NULL,
+	saran_id integer NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES users(id),
+	FOREIGN KEY (saran_id) REFERENCES saranjurusan(id)
+);`)
+
 
 	if err != nil {
 		panic(err)
