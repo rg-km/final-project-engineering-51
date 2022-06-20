@@ -1,4 +1,5 @@
 import React ,{ useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Flex,
   Box,
@@ -11,7 +12,8 @@ import {
   Input,
   Button
 } from '@chakra-ui/react';
-import Header from './Header'
+import Header from '../components/Header';
+
 
 const VARIANT_COLOR = '#C73661';
 
@@ -23,6 +25,7 @@ function RegisterForm ()  {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [cPasswordClass, setCPasswordClass] = useState('form-control');
   const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
+  const Navigate = useNavigate();
 
   useEffect(() => {
     if (isCPasswordDirty) {
@@ -54,11 +57,12 @@ function RegisterForm ()  {
       },
     })
     result=await result.json()
-    console.warn("result",result)
+    localStorage.setItem("user-info",JSON.stringify(result))
+    Navigate("/")
   }
   return (
-    <Flex direction="column" justifyContent='center'>
-      <Header/>
+    <Flex direction="column" justifyContent='center' textAlign='center'>
+      <Header />
       <br /><br /><br />
       <Heading as='h2' size='xl'>
        Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
@@ -82,7 +86,8 @@ function RegisterForm ()  {
                 Sudah punya akun? 
                 <Link 
                   href='LoginForm.js'
-                  color={`${VARIANT_COLOR}.500`}
+                  color='red'
+                  fontWeight="bold"
                   >
                     Masuk
                 </Link>
@@ -139,7 +144,7 @@ function RegisterForm ()  {
         </Box>
       </Flex>
       <div>
-        Copyright 2022 • All rights reserved • KenaliAku
+        &copy; {new Date().getFullYear()} Copyright 2022 • All rights reserved • KenaliAku
       </div>
       <br /><br />
     </Flex>

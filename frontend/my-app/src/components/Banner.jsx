@@ -3,19 +3,15 @@ import {
     Image,
     Button,
     Text,
-    Table,Thead, Tbody, Tr, Th, Td,
     Heading,
     Stack,
 } from '@chakra-ui/react';
-import Header from './Header';
-import Footer from './Footer';
 import illustration from '../assets/banner.png';
 import * as React from 'react';
 
 function Banner(){
     return(
     <>
-        <Header/>
         <Box ml={70} mr={70}>
             <Box id="beranda" display="flex" alignItems="center" justifyContent="space-around" py="20">
                 <Box w="40%" >
@@ -75,7 +71,6 @@ function Banner(){
                 </Box>
             </Stack>
         </Box>
-        <Footer/>
     </>
     );
 }

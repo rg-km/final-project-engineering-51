@@ -1,6 +1,5 @@
 import {
     Box,
-    Button,
     Text,
     ButtonGroup,
     Divider,
@@ -14,6 +13,7 @@ import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 function Footer(){
     return(
     <>
+    <br/><br/>
         <footer>
             <Box background="#FFF0F5">
             <Box ml={70} mr={70}>
@@ -62,7 +62,7 @@ function Footer(){
             align="center"
             >
             <Text fontWeight="bold" fontSize="sm" color="subtle">
-                &copy; {new Date().getFullYear()} Kenali Aku. All rights reserved.
+                &copy; {new Date().getFullYear()} Copyright 2022 • All rights reserved • KenaliAku
             </Text>
             </Stack>
             </Box>
