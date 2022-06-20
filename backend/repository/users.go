@@ -38,7 +38,26 @@ func (u *UserRepository) FetchUserByID(id int64) (*User, error) {
 
 	return &user, nil // TODO: replace this
 }
+func (u *UserRepository) FetchUserByEmail(email string) (*User, error) {
+	var user User
+	sqlStatement  := `SELECT * FROM users WHERE email = ?`
 
+	row := u.db.QueryRow(sqlStatement, email)
+	err := row.Scan(
+		&user.ID,
+		&user.Fullname,
+		&user.Email,
+		&user.Password,
+		&user.Role,
+		&user.Loggedin,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil // TODO: replace this
+}
 func (u *UserRepository) FetchUsers() ([]User, error) {
 	var sqlStatement string
 	var users []User
