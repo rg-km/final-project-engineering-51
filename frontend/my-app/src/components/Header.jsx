@@ -1,11 +1,11 @@
 import {
     Box,
     Button,
-    Link,
     Text,
 }
 from '@chakra-ui/react';
 import * as React from 'react';
+import { Link } from 'react-router-dom'
 
 function Header(){
     return(
@@ -21,10 +21,10 @@ function Header(){
                         <Link mr={5} colorScheme="gray.600" fontSize="1xl" >Tentang</Link>
                         <Link mr={5} colorScheme="gray.600" fontSize="1xl" >Layanan</Link>
                         <Button mr={5} colorScheme="gray.600" fontSize="1xl" color="#E84B6A" variant='outline'>
-                            Daftar
+                            <Link to='/register'>Daftar</Link> | {" "}
                         </Button>
                         <Button colorScheme="gray.600" fontSize="1xl" backgroundColor="#E84B6A">
-                            Masuk
+                            <Link to='/login'>Masuk</Link> | {" "}
                         </Button>
                     </Box>
                 </Box>
