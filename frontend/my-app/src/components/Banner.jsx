@@ -8,6 +8,7 @@ import {
 } from '@chakra-ui/react';
 import illustration from '../assets/banner.png';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 function Banner(){
     return(
@@ -24,9 +25,11 @@ function Banner(){
                     Kenali dirimu dengan melakukan Tes Minat dan Bakat di KenaliAku. Temukan jurusan studi terbaik untuk #MasaDepanmu
                     </Box>
                     <Box mt="4">
-                        <Button pr={5} fontSize="lg" color="black" variant='outline' background="#FFCD1D">
-                            Ikuti Tes Sekarang
-                        </Button>
+                        <Link to={"/test-opening"}>
+                            <Button pr={5} fontSize="lg" color="black" variant='outline' background="#FFCD1D">
+                                Ikuti Tes Sekarang
+                            </Button>
+                        </Link>
                     </Box>
                 </Box>
                 <Box w="30%">
