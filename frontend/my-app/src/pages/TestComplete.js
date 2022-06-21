@@ -15,12 +15,12 @@ function TestComplete() {
       <Box className='test-complete' bg='#F9F9F9' w='100%' py={16} px={36} color='black'>
         <Flex textAlign='center' alignItems='center' flexDirection='column' gap={12}>
           <Heading as='h1' size='lg'>
-            Pengenalan Tes Minat Bakat
+            Hore! Kamu berhasil menyelesaikan seluruh tes
           </Heading>
           <Image src={Complete} alt='Complete' />
           <Text w='2xl'>
-            Tes ini digunakan untuk mencari tahu tentang kelebihan dan kelemahan kamu, 
-            jurusan studi, serta karir yang cocok dengan minat dan bakatmu 
+            Sekarang kamu dapat melihat hasil dan penjelasan lebih lanjut mengenai minat 
+            dan bakatkamu dengan menekan tombol dibawah ini.
           </Text>
           <Box>
             <Button colorScheme="gray.600" backgroundColor='primary.500'>
