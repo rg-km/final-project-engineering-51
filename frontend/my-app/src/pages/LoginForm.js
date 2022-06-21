@@ -14,7 +14,7 @@ import {
   Button
 } from '@chakra-ui/react';
 import Header from '../components/Header';
-
+import Footer from '../components/Footer';
 
 const VARIANT_COLOR = '#C73661';
 
@@ -100,10 +100,7 @@ async function login(){
         </Box>
         </Box>
       </Flex>
-      <div>
-        &copy; {new Date().getFullYear()} Copyright 2022 • All rights reserved • KenaliAku
-      </div>
-      <br /><br />
+      <Footer/>
     </Flex>
   )
 }
