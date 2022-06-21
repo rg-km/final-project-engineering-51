@@ -8,10 +8,13 @@ import {
 } from '@chakra-ui/react';
 import * as React from 'react';
 import Complete from '../assets/finish.png';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 
 function TestComplete() {
   return(
     <>
+      <Header />
       <Box className='test-complete' bg='#F9F9F9' w='100%' py={16} px={36} color='black'>
         <Flex textAlign='center' alignItems='center' flexDirection='column' gap={12}>
           <Heading as='h1' size='lg'>
@@ -29,6 +32,7 @@ function TestComplete() {
           </Box>
         </Flex>
       </Box>
+      <Footer />
     </>
   )
 }

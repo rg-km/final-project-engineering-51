@@ -9,6 +9,8 @@ import {
 import Petunjuk1 from '../assets/petunjuk-1.png';
 import Petunjuk2 from '../assets/petunjuk-2.png';
 import Petunjuk3 from '../assets/petunjuk-3.png';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 
 function TestOpening() {
   const property = [
@@ -31,6 +33,7 @@ function TestOpening() {
   
   return(
     <>
+      <Header />
       <Box id='test-opening' bg='#F9F9F9' w='100%' py={16} px={36} color='black'>
         <Flex textAlign='center' alignItems='center' flexDirection='column' gap={12}>
           <Box>
@@ -69,6 +72,7 @@ function TestOpening() {
           </Box>
         </Flex>
       </Box>
+      <Footer />
     </>
   );
 }
