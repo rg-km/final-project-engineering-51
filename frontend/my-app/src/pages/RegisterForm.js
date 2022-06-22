@@ -13,6 +13,7 @@ import {
   Button
 } from '@chakra-ui/react';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 
 const VARIANT_COLOR = '#C73661';
@@ -61,8 +62,9 @@ function RegisterForm ()  {
     Navigate("/")
   }
   return (
+    <>
+    <Header />
     <Flex direction="column" justifyContent='center' textAlign='center'>
-      <Header />
       <br /><br /><br />
       <Heading as='h2' size='xl'>
        Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
@@ -148,6 +150,8 @@ function RegisterForm ()  {
       </div>
       <br /><br />
     </Flex>
+    <Footer/>
+    </>
   )
 }
 export default  (RegisterForm);

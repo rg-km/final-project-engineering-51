@@ -11,7 +11,6 @@ import Header from './Header';
 import Footer from './Footer';
 import illustration from '../assets/banner.png';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
 function Banner(){
     return(
@@ -30,7 +29,7 @@ function Banner(){
                     </Box>
                     <Box mt="4">
                         <Link to={"/test-opening"}>
-                            <Button pr={5} fontSize="lg" color="black" variant='outline' background="#FFCD1D">
+                            <Button zIndex="-1" pr={5} fontSize="lg" color="black" variant='outline' background="#FFCD1D">
                                 Ikuti Tes Sekarang
                             </Button>
                         </Link>

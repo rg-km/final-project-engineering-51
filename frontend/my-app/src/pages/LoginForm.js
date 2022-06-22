@@ -44,8 +44,9 @@ async function login(){
   Navigate("/")
 }
   return (
+    <>
+    <Header />
     <Flex direction="column" justifyContent='center' textAlign='center'>
-      <Header />
       <br /><br /><br />
       <Heading as='h2' size='xl'>
       Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
@@ -100,8 +101,9 @@ async function login(){
         </Box>
         </Box>
       </Flex>
-      <Footer/>
     </Flex>
+    <Footer/>
+    </>
   )
 }
 export default LoginForm;
