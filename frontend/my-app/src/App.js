@@ -4,6 +4,8 @@ import LandingPage from "./pages/LandingPage";
 import LoginForm from "./pages/LoginForm";
 import RegisterForm from "./pages/RegisterForm";
 import ErrorPage from "./pages/ErrorPage";
+import TestOpening from "./pages/TestOpening";
+import TestComplete from "./pages/TestComplete";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
             <Route path="/" element={<LandingPage/>} />
             <Route path="/login" element={<LoginForm/>} />
             <Route path="/register" element={<RegisterForm/>} />
+            <Route path="/test-opening" element={<TestOpening/>} />
+            <Route path="/test-complete" element={<TestComplete/>} />
             <Route path="*" element={<ErrorPage/>}/>
         </Routes>
       </Router>
