@@ -15,29 +15,21 @@ func NewResultRepository(db *sql.DB) *ResultRepository {
 	return &ResultRepository{db: db}
 }
 
-func(r *ResultRepository) FetchKategori() ([]string, error){
-	var categories []string
-	sqlStatement := `SELECT k.nama FROM soal s INNER JOIN kategori k ON s.kategori_id = k.id`
+func(r *ResultRepository) FetchKategoriByNoSoal(NoSoal int64) (*string, error){
 
-	rows, err := r.db.Query(sqlStatement)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+	sqlStatement := `SELECT k.nama FROM soal s INNER JOIN kategori k ON s.kategori_id = k.id WHERE s.no_soal = ?`
 
-	for rows.Next() {
+	row := r.db.QueryRow(sqlStatement, NoSoal)
+
 		var kategori string
-		err := rows.Scan(
+		err := row.Scan(
 			&kategori,
 		)
 		if err != nil {
 			return nil, err
 		}
 
-		categories = append(categories, kategori)
-	}
-
-	return categories, nil
+	return &kategori, nil
 } 
 
 func maxKategori(nilai map[string]int64) string {
@@ -60,7 +52,7 @@ func maxKategori(nilai map[string]int64) string {
 	return maxKey
 }
 
-func (r *ResultRepository) Submit(email string, answer [60]bool) (error) {
+func (r *ResultRepository) Submit(email string, answer [60]Answer) (error) {
 	kategoriMap := make(map[string]int64)
 	if len(answer) > 60 {
 		return errors.New("jumlah data jawaban lebih dari 60")
@@ -69,16 +61,16 @@ func (r *ResultRepository) Submit(email string, answer [60]bool) (error) {
 		return errors.New("jumlah data jawaban kurang dari 60")
 	} 
 
-	categories, err := r.FetchKategori()
-	if err != nil {
-		return err
-	}
-
-	for i,kategori := range categories {
-		if !answer[i]{
-			continue
+	for _, ans := range answer {
+		
+		if ans.Answer{
+			kategori, err := r.FetchKategoriByNoSoal(ans.No)
+			if err != nil{
+			return err
 		}
-		kategoriMap[kategori]++
+		kategoriMap[*kategori]++
+		}
+		
 	}
 
 	maxKategori := maxKategori(kategoriMap)
@@ -120,7 +112,7 @@ func (r *ResultRepository) Submit(email string, answer [60]bool) (error) {
 	return nil
 }
 
-func (r *ResultRepository) ReSubmit(email string, answer [60]bool) (error) {
+func (r *ResultRepository) ReSubmit(email string, answer [60]Answer) (error) {
 	kategoriMap := make(map[string]int64)
 	if len(answer) > 60 {
 		return errors.New("jumlah data jawaban lebih dari 60")
@@ -129,16 +121,14 @@ func (r *ResultRepository) ReSubmit(email string, answer [60]bool) (error) {
 		return errors.New("jumlah data jawaban kurang dari 60")
 	} 
 
-	categories, err := r.FetchKategori()
-	if err != nil {
-		return err
-	}
-
-	for i,kategori := range categories {
-		if !answer[i]{
-			continue
+	for _, ans := range answer {
+		if ans.Answer{
+			kategori, err := r.FetchKategoriByNoSoal(ans.No)
+			if err != nil{
+			return err
 		}
-		kategoriMap[kategori]++
+		kategoriMap[*kategori]++
+		}
 	}
 
 	maxKategori := maxKategori(kategoriMap)
@@ -277,6 +267,7 @@ func (r *ResultRepository) FetchResultByEmail(email string) (*Result, error) {
 	u.fullname,
 	u.email,
 	(SELECT nama FROM kategori WHERE id = s.kategori_id) as kategori_tertinggi,
+	(SELECT desc FROM kategori WHERE id = s.kategori_id),
 	s.saran_1,
 	s.saran_2,
 	s.saran_3,
@@ -294,6 +285,7 @@ func (r *ResultRepository) FetchResultByEmail(email string) (*Result, error) {
 		&hasil.Fullname,
 		&hasil.Email,
 		&hasil.Kategori,
+		&hasil.Desc,
 		&hasil.Saran1,
 		&hasil.Saran2,
 		&hasil.Saran3,
