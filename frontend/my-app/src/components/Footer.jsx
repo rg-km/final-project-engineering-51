@@ -1,6 +1,5 @@
 import {
     Box,
-    Button,
     Text,
     ButtonGroup,
     Divider,
@@ -14,8 +13,9 @@ import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 function Footer(){
     return(
     <>
+    <br/><br/>
         <footer>
-            <Box background="#FFF0F5">
+            <Box background="black">
             <Box ml={70} mr={70}>
             <Stack
             spacing="8"
@@ -24,7 +24,7 @@ function Footer(){
             py={{ base: '12', md: '10' }}
             >
             <Stack spacing={{ base: '6', md: '8' }} align="start">
-                <Text fontWeight="bold" fontSize='3xl'>KenaliAku</Text>
+                <Text color="white" fontWeight="bold" fontSize='3xl'>KenaliAku</Text>
             </Stack>
             <Stack
                 direction={{ base: 'column-reverse', md: 'column', lg: 'row' }}
@@ -32,20 +32,20 @@ function Footer(){
             >
                 <Stack direction="row" spacing="10">
                     <Stack spacing="4" minWidth="200" flex="1" >
-                        <Text fontSize="sm" fontWeight="semibold" color="subtle">
+                        <Text fontSize="sm" fontWeight="semibold" color="white">
                         Kontak Kami
                         </Text>
                         <Stack spacing="3" shouldWrapChildren>
-                        <Text fontSize="sm"><PhoneIcon/> 087748238383</Text>
-                        <Text fontSize="sm"><AtSignIcon/> KenaliAku@gmail.com</Text>
+                        <Text color="white" fontSize="sm"><PhoneIcon/> 087748238383</Text>
+                        <Text color="white" fontSize="sm"><AtSignIcon/> KenaliAku@gmail.com</Text>
                         </Stack>
                     </Stack>
                     <Stack spacing="4">
-                    <Text fontSize="sm" fontWeight="semibold" color="subtle">Ikuti Kami</Text>
+                    <Text fontSize="sm" fontWeight="semibold" color="white">Ikuti Kami</Text>
                     <ButtonGroup variant="ghost">
-                        <IconButton as="a" href="#" aria-label="LinkedIn" icon={<FaLinkedin fontSize="1.25rem" />} />
-                        <IconButton as="a" href="#" aria-label="GitHub" icon={<FaGithub fontSize="1.25rem" />} />
-                        <IconButton as="a" href="#" aria-label="Twitter" icon={<FaTwitter fontSize="1.25rem" />} />
+                        <IconButton color="white" as="a" href="#" aria-label="LinkedIn" icon={<FaLinkedin fontSize="1.25rem" />} />
+                        <IconButton color="white" as="a" href="#" aria-label="GitHub" icon={<FaGithub fontSize="1.25rem" />} />
+                        <IconButton color="white" as="a" href="#" aria-label="Twitter" icon={<FaTwitter fontSize="1.25rem" />} />
                     </ButtonGroup>
                     </Stack>
                 </Stack>
@@ -61,8 +61,8 @@ function Footer(){
             direction={{ base: 'column-reverse', md: 'row' }}
             align="center"
             >
-            <Text fontWeight="bold" fontSize="sm" color="subtle">
-                &copy; {new Date().getFullYear()} Kenali Aku. All rights reserved.
+            <Text fontWeight="bold" fontSize="sm" color="white">
+                &copy; {new Date().getFullYear()} • KenaliAku • All rights reserved
             </Text>
             </Stack>
             </Box>
