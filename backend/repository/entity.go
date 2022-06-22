@@ -10,6 +10,12 @@ type User struct {
 	Token    string
 }
 
+type Answer struct {
+	No int64 `json:"no_soal"`
+	Answer bool `json:"answer"`
+}
+
+
 type Soal struct {
 	No int64 `db:"no_soal"`
 	Desc string `db:"desc_soal"`
@@ -32,6 +38,7 @@ type Result struct {
 	Fullname string `db:"fullname"`
 	Email string `db:"email"`
 	Kategori string `db:"kategori_tertinggi"`
+	Desc string `db:"desc"`
 	Saran1 string `db:"saran_1"`
 	Saran2 string `db:"saran_2"`
 	Saran3 string `db:"saran_3"`
