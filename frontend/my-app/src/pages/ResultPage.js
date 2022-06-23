@@ -91,10 +91,40 @@ function TestComplete() {
 
             
           </Box>
+          <Box>
+            <Text mb={10}>
+            Apa Jurusan Yang Cocok Untuk Kamu?
+            </Text>
+            <Text mb={8}>
+            Berikut adalah daftar jurusan yang cocok dengan minat bakatmu. Ayo cari tau lebih lanjut dengan menekan tombol nama jurusan yang paling menarik perhatianmu.
+            </Text>
+            <Divider mb={10} color="black" sx={{ bgcolor: "secondary.light", border:"2px" }} />
+
+                <VStack spacing={6}>
+                  <HStack spacing={6}>
+                    <Tooltip label='Sosiologi' placement='sosiologi'>
+                      <Button>Sosiologi</Button>
+                    </Tooltip>
+
+                    <Tooltip label='Psikologi' placement='psikologi'>
+                      <Button>Psikologi</Button>
+                    </Tooltip>
+                  </HStack>
+
+                  <HStack spacing={6}>
+                    <Tooltip label='Ilmu-komunikasi' placement='ilmu-komunikasi'>
+                      <Button>Ilmu-Komunikasi</Button>
+                    </Tooltip>
+
+   
+                    <Tooltip label='Hubungan-masyarakat' placement='hubungan-masyarakat'>
+                      <Button>Hubungan-Masyarakat</Button>
+                    </Tooltip>
+                  </HStack>
+                </VStack>
+          </Box>
         </Flex>
-        <Box>
-        </Box>
-      </Box>
+      </Box> 
       <Footer />
     </>
   )
