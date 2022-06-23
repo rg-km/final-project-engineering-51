@@ -25,8 +25,6 @@ const VARIANT_COLOR = '#C73661';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email,setEmail]=useState("");
-  const [password,setPassword]=useState("");
   const Navigate = useNavigate();
   const [validOnChange, setValidOnChange] = React.useState(false);
 
@@ -36,42 +34,37 @@ const LoginForm = () => {
     }
   },[Navigate])
 
-async function login(){
-  console.warn(email,password)
-  let item={email,password}
+async function dologin(values){
+  console.log('dologin')
+  let item={email : values.email, password : values.password}
   let result = await fetch("http://localhost:8080/api/user/login",{
-    method:"POST",
-    body:JSON.stringify(item),
-    headers:{
-      "Content-Type":"application/json",
-      "Accept":"application/json"
-    },
-  });
-  result = await result.json()
-  localStorage.setItem("user-info",JSON.stringify(result))
-  Navigate("/")
+        method:"POST",
+        body:JSON.stringify(item),
+        headers:{
+          "Content-Type":"application/json",
+          "Accept":"application/json"
+        },
+      });
+      result = await result.json()
+      localStorage.setItem("user-info",JSON.stringify(result))
+      Navigate("/")
+      if(result){
+        setTimeout(() => {
+          formik.setSubmitting(false);
+          formik.resetForm();
+      }, 2000);
+      }
 }
 
-const dologin = (values) => {
-  console.log('form values', values);
-  setTimeout(() => {
-      formik.setSubmitting(false);
-      formik.resetForm();
-  }, 2000);
-}
 const formik = useFormik({
   initialValues: {
       email: '',
       password: '',
       remember: false,
   },
-  validateOnBlur: true,
-validateOnChange: true,
-validateOnMount: true,
   validationSchema: Yup.object({
-      email: Yup.string()
-          .required("Email harus diisi")
-          .email('Format email tidak cocok'),
+      email: Yup.string('Format email tidak cocok')
+          .required("Email harus diisi"),
       password: Yup.string()
           .required("Password harus diisi")
   }),
@@ -84,8 +77,7 @@ validateOnMount: true,
     <Header />
     <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
-      <Header />
-      <br /><br /><br /><br /><br />
+      <br /><br />
       <Heading as='h2' size='xl'>
       Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
@@ -115,11 +107,10 @@ validateOnMount: true,
                 </Link>
               </Text>
             </Box>
-            <FormControl zIndex="-1" isRequired mt={4}>
+            <FormControl z-index="-1" isRequired mt={4}>
               <FormLabel>Alamat Email</FormLabel>
               <Input 
-              autofocus
-                id='email'
+                z-index="-1"
                 type='email' 
                 placeholder=' ' 
                 name="email"
@@ -130,10 +121,11 @@ validateOnMount: true,
               {formik.touched.email && formik.errors.email && <div className="error">{formik.errors.email}</div>}
             </FormControl>
 
-            <FormControl zIndex="-1" id="password" isRequired mt={4}>
+            <FormControl id="password"  z-index="-1" isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
               <InputGroup>
                 <Input 
+                 z-index="0"
                   name="password"
                   type={showPassword ? 'text' : 'password' } 
                   onChange={e => formik.setFieldValue('password', e.target.value)}
@@ -161,11 +153,20 @@ validateOnMount: true,
               </Box>
             </Stack>
 
-            <Button disabled={formik.isSubmitting} onClick={() => {
-              if (!validOnChange) {
-                setValidOnChange(true);
-              }
-            }} type='submit' colorScheme='red'  width='full' mt={4}>Masuk</Button>
+            <Button 
+              disabled={formik.isSubmitting} 
+              onClick={() => {
+                if (!validOnChange) {
+                  setValidOnChange(true);
+                }
+              }} 
+              type='submit' 
+              colorScheme='red'  
+              width='full' 
+              mt={4}
+            >
+              Masuk
+            </Button>
           </form>
         </Box>
         </Box>

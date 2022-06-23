@@ -24,16 +24,30 @@ const VARIANT_COLOR = '#C73661';
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [name,setName]=useState("")
-  const [email,setEmail]=useState("")
-  const [password,setPassword]=useState("")
   const [cPassword] = useState('');
   const Navigate = useNavigate();
+  const [validOnChange, setValidOnChange] = React.useState(false);
 
-  async function signUp(){
-    let item={name,email,password}
-    console.warn(item)
+  // async function signUp(){
+  //   let item={name,email,password}
+  //   console.warn(item)
 
+  //   let result= await fetch("http://localhost:8080/api/user/register",{
+  //     method:"POST",
+  //     body:JSON.stringify(item),
+  //     headers:{
+  //       "Content-Type":"application/json",
+  //       "Accept":"application/json"
+  //     },
+  //   })
+  //   result=await result.json()
+  //   localStorage.setItem("user-info",JSON.stringify(result))
+  //   Navigate("/")
+  // }
+
+  async function doregister(values){
+    console.log('doregister');
+    let item={name: values.name, email : values.email, password : values.password}
     let result= await fetch("http://localhost:8080/api/user/register",{
       method:"POST",
       body:JSON.stringify(item),
@@ -45,10 +59,6 @@ const RegisterForm = () => {
     result=await result.json()
     localStorage.setItem("user-info",JSON.stringify(result))
     Navigate("/")
-  }
-
-  const doregister = (values) => {
-    console.log('form values', values);
     setTimeout(() => {
         formik.setSubmitting(false);
         formik.resetForm();
@@ -61,7 +71,6 @@ const formik = useFormik({
         password: '',
         cPassword: '',
     },
-
     validationSchema: Yup.object({
         name: Yup.string()
             .required(),
@@ -79,19 +88,16 @@ const formik = useFormik({
             .required()
             .oneOf([Yup.ref('password')], 'Kata Sandi Tidak Cocok'),
     }),
-
-    onSubmit: doregister
+    onSubmit: (values) => {
+      doregister(values);
+    }
   });
   return (
     <>
     <Header />
     <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
-<<<<<<< HEAD
-      <Header />
-      <br /><br /><br /><br /><br />
-=======
->>>>>>> 39a47a9eadd5d456295fcc2e62f0600dd8008107
+      <br /><br />
       <Heading as='h2' size='xl'>
        Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
@@ -116,46 +122,46 @@ const formik = useFormik({
                   href='LoginForm.js'
                   color='red'
                   fontWeight="bold"
-                  >
+                >
                   Masuk
                 </Link>
               </Text>
             </Box>
 
-            <FormControl zIndex="-1" isRequired mt={4}>
+            <FormControl isRequired mt={4}>
               <FormLabel >Nama Lengkap</FormLabel>
               <Input 
                 name='name' 
                 placeholder=' ' 
-                value={name} 
-                onChange={(e)=>setName(e.target.value)}
-                {...formik.getFieldProps('name')}
+                value = {formik.values.name}
+                onChange={e => formik.setFieldValue('name', e.target.value)}
+                invalid={formik.errors.name}
               />
               {formik.touched.name && formik.errors.name && <div className="error">{formik.errors.name}</div>}
             </FormControl>
 
-            <FormControl zIndex="-1" isRequired mt={4}>
+            <FormControl isRequired mt={4}>
               <FormLabel>Alamat Email</FormLabel>
               <Input 
                 name='email'
                 type='email' 
                 placeholder=' ' 
-                value={email} 
-                onChange={(e)=>setEmail(e.target.value)}
-                {...formik.getFieldProps('email')}
+                value = {formik.values.email}
+                onChange={e => formik.setFieldValue('email', e.target.value)}
+                invalid={formik.errors.email}
               />
               {formik.touched.email && formik.errors.email && <div className="error">{formik.errors.email}</div>}
             </FormControl>
 
-            <FormControl zIndex="-1" id="password" isRequired mt={4}>
+            <FormControl id="password" isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
               <InputGroup>
                 <Input 
                   name='password'
                   type={showPassword ? 'text' : 'password' } 
-                  value={password}
-                  onChange={(e)=>setPassword(e.target.value)} 
-                  {...formik.getFieldProps('password')}
+                  value = {formik.values.password}
+                  onChange={e => formik.setFieldValue('password', e.target.value)}
+                  invalid={formik.errors.password}
                 />
                 <InputRightElement h={'full'}>
                   <Button
@@ -170,7 +176,7 @@ const formik = useFormik({
               {formik.touched.password && formik.errors.password && <div className="error">{formik.errors.password}</div>}
             </FormControl>
 
-            <FormControl zIndex="-1" isRequired mt={4}>
+            <FormControl isRequired mt={4}>
               <FormLabel>Konfirmasi Kata Sandi</FormLabel>
               <InputGroup>
                 <Input 
@@ -192,15 +198,23 @@ const formik = useFormik({
               {formik.touched.cPassword && formik.errors.cPassword && <div className="error">{formik.errors.cPassword}</div>}
             </FormControl>
 
-            <Button  disabled={formik.isSubmitting} onClick={signUp} colorScheme='red'  width='full' mt={6}>Daftar</Button>
+            <Button  disabled={formik.isSubmitting} 
+              onClick={() => {
+                if (!validOnChange) {
+                  setValidOnChange(true);
+                }
+              }} 
+              type='submit' 
+              colorScheme='red'  
+              width='full' 
+              mt={4}
+            >
+              Daftar
+            </Button>
           </form>
         </Box>
         </Box>
       </Flex>
-<<<<<<< HEAD
-      <Footer/>
-=======
->>>>>>> 39a47a9eadd5d456295fcc2e62f0600dd8008107
     </Flex>
     <Footer/>
     </>
