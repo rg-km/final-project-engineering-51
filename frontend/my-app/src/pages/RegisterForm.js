@@ -1,5 +1,7 @@
-import React ,{ useState, useEffect } from 'react';
+import React ,{ useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import {
   Flex,
   Box,
@@ -8,41 +10,25 @@ import {
   Link,
   FormControl,
   FormLabel,
-  FormHelperText,
   Input,
-  Button
+  Button,
+  InputGroup,
+  InputRightElement,
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 
 const VARIANT_COLOR = '#C73661';
 
-function RegisterForm ()  {
+const RegisterForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const [name,setName]=useState("")
   const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
-  const [cPassword, setCPassword] = useState('');
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [cPasswordClass, setCPasswordClass] = useState('form-control');
-  const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
+  const [cPassword] = useState('');
   const Navigate = useNavigate();
-
-  useEffect(() => {
-    if (isCPasswordDirty) {
-        if (password === cPassword) {
-            setShowErrorMessage(false);
-            setCPasswordClass('form-control is-valid')
-        } else {
-            setShowErrorMessage(true)
-            setCPasswordClass('form-control is-invalid')
-        }
-    }
-  }, [cPassword, isCPasswordDirty, password]);
-
-  const handleCPassword = (e) => {
-    setCPassword(e.target.value);
-    setIsCPasswordDirty(true);
-  }
 
   async function signUp(){
     let item={name,email,password}
@@ -60,10 +46,46 @@ function RegisterForm ()  {
     localStorage.setItem("user-info",JSON.stringify(result))
     Navigate("/")
   }
+
+  const doregister = (values) => {
+    console.log('form values', values);
+    setTimeout(() => {
+        formik.setSubmitting(false);
+        formik.resetForm();
+    }, 2000);
+}
+const formik = useFormik({
+    initialValues: {
+        name: '',
+        email: '',
+        password: '',
+        cPassword: '',
+    },
+
+    validationSchema: Yup.object({
+        name: Yup.string()
+            .required(),
+        email: Yup.string()
+            .required()
+            .email('Format email tidak cocok'),
+        password: Yup.string()
+            .required()
+            .min(6, 'Minimal 6 Karakter')
+            .matches(/[a-z]/g, 'Harus terdapat minimal 1 lowercase')
+            .matches(/[A-Z]/g, 'Harus terdapat minimal 1 uppercase')
+            .matches(/[0-9]/g, 'Harus terdapat minimal 1 number')
+            .matches(/^\S*$/, 'Tidak boleh mengandung spasi'),
+        cPassword: Yup.string()
+            .required()
+            .oneOf([Yup.ref('password')], 'Kata Sandi Tidak Cocok'),
+    }),
+
+    onSubmit: doregister
+  });
   return (
     <Flex direction="column" justifyContent='center' textAlign='center'>
       <Header />
-      <br /><br /><br />
+      <br /><br /><br /><br /><br />
       <Heading as='h2' size='xl'>
        Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
@@ -79,7 +101,7 @@ function RegisterForm ()  {
           boxShadow="lg"
         >
         <Box my={8} textAlign='left'>
-          <form>
+          <form onSubmit={formik.handleSubmit}>
             <Box textAlign='center'>
               <Heading as='h4' size='md'>Daftar</Heading>
               <Text>
@@ -94,59 +116,82 @@ function RegisterForm ()  {
               </Text>
             </Box>
 
-            <FormControl isRequired mt={4}>
+            <FormControl zIndex="-1" isRequired mt={4}>
               <FormLabel >Nama Lengkap</FormLabel>
               <Input 
-                id='name' 
+                name='name' 
                 placeholder=' ' 
                 value={name} 
                 onChange={(e)=>setName(e.target.value)}
+                {...formik.getFieldProps('name')}
               />
+              {formik.touched.name && formik.errors.name && <div className="error">{formik.errors.name}</div>}
             </FormControl>
 
-            <FormControl isRequired mt={4}>
+            <FormControl zIndex="-1" isRequired mt={4}>
               <FormLabel>Alamat Email</FormLabel>
               <Input 
+                name='email'
                 type='email' 
                 placeholder=' ' 
                 value={email} 
                 onChange={(e)=>setEmail(e.target.value)}
+                {...formik.getFieldProps('email')}
               />
+              {formik.touched.email && formik.errors.email && <div className="error">{formik.errors.email}</div>}
             </FormControl>
-            
-            <FormControl isRequired mt={4}>
+
+            <FormControl zIndex="-1" id="password" isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
-              <Input 
-                id='password' 
-                type='password' 
-                placeholder=' ' 
-                value={password} 
-                onChange={(e)=>setPassword(e.target.value)}
-              />
-              <FormHelperText>Minimal 6 Karakter</FormHelperText>
+              <InputGroup>
+                <Input 
+                  name='password'
+                  type={showPassword ? 'text' : 'password' } 
+                  value={password}
+                  onChange={(e)=>setPassword(e.target.value)} 
+                  {...formik.getFieldProps('password')}
+                />
+                <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }>
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              {formik.touched.password && formik.errors.password && <div className="error">{formik.errors.password}</div>}
             </FormControl>
 
-            <FormControl isRequired mt={4}>
+            <FormControl zIndex="-1" isRequired mt={4}>
               <FormLabel>Konfirmasi Kata Sandi</FormLabel>
-              <Input 
-                type='password' 
-                className={cPasswordClass}
-                placeholder=' ' 
-                value={cPassword} 
-                onChange={handleCPassword}
-              />
+              <InputGroup>
+                <Input 
+                  name='cPassword'
+                  type={showPassword ? 'text' : 'password' } 
+                  value={cPassword}
+                  {...formik.getFieldProps('cPassword')}
+                />
+                <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }>
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              {formik.touched.cPassword && formik.errors.cPassword && <div className="error">{formik.errors.cPassword}</div>}
             </FormControl>
-            {showErrorMessage && isCPasswordDirty ? <div> Kata Sandi Tidak Cocok </div> : ''}
 
-            <Button onClick={signUp} colorScheme='red'  width='full' mt={6}>Daftar</Button>
+            <Button  disabled={formik.isSubmitting} onClick={signUp} colorScheme='red'  width='full' mt={6}>Daftar</Button>
           </form>
         </Box>
         </Box>
       </Flex>
-      <div>
-        &copy; {new Date().getFullYear()} Copyright 2022 • All rights reserved • KenaliAku
-      </div>
-      <br /><br />
+      <Footer/>
     </Flex>
   )
 }
