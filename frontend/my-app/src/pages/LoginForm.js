@@ -46,8 +46,8 @@ async function login(){
   return (
     <>
     <Header />
+    <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
-      <br /><br /><br />
       <Heading as='h2' size='xl'>
       Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
@@ -69,10 +69,10 @@ async function login(){
               <Text>
                 Belum punya akun?
                 <Link 
-                  href='RegisterForm.js' 
-                  color='red'
-                  fontWeight="bold"
-                  >
+                href='RegisterForm.js' 
+                color='red'
+                fontWeight="bold"
+                >
                      Daftar Sekarang
                 </Link>
               </Text>

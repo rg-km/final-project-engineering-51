@@ -64,8 +64,8 @@ function RegisterForm ()  {
   return (
     <>
     <Header />
+    <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
-      <br /><br /><br />
       <Heading as='h2' size='xl'>
        Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
@@ -85,13 +85,13 @@ function RegisterForm ()  {
             <Box textAlign='center'>
               <Heading as='h4' size='md'>Daftar</Heading>
               <Text>
-                Sudah punya akun? 
+                Sudah punya akun?  
                 <Link 
                   href='LoginForm.js'
                   color='red'
                   fontWeight="bold"
                   >
-                    Masuk
+                  Masuk
                 </Link>
               </Text>
             </Box>
@@ -145,10 +145,6 @@ function RegisterForm ()  {
         </Box>
         </Box>
       </Flex>
-      <div>
-        &copy; {new Date().getFullYear()} Copyright 2022 • All rights reserved • KenaliAku
-      </div>
-      <br /><br />
     </Flex>
     <Footer/>
     </>

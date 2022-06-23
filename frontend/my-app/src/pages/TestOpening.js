@@ -34,7 +34,8 @@ function TestOpening() {
   return(
     <>
       <Header />
-      <Box id='test-opening' bg='#F9F9F9' w='100%' py={16} px={36} color='black'>
+      <br/>
+      <Box id='test-opening' w='100%' py={16} px={36} color='black'>
         <Flex textAlign='center' alignItems='center' flexDirection='column' gap={12}>
           <Box>
             <Heading as='h1' size='lg' mb={6}>

@@ -58,7 +58,7 @@ function Header(){
                             color="#E84B6A" 
                             variant='outline'
                             onClick={()=>navigate('/register')}
-                        >
+                            >
                             Daftar
                             </Button>
                             <Button 
