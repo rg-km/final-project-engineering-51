@@ -20,7 +20,7 @@ function TestComplete() {
     <>
       <Header />
       <br/><br/> 
-      <Box className='test-complete' w='100%' backgroundImage={Bg} backgroundRepeat="no-repeat" py={16} px={36} color='black'>
+      <Box backgroundImage={Bg} backgroundRepeat="no-repeat" backgroundSize="100%" py={16} px={36}>
         <Flex textAlign='center' alignItems='center' flexDirection='column'>
           <Heading as='h1' size='px' mb={4}>
             Kamu merupakan tipe :
