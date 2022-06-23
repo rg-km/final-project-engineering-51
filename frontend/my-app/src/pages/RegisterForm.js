@@ -83,9 +83,15 @@ const formik = useFormik({
     onSubmit: doregister
   });
   return (
+    <>
+    <Header />
+    <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
+<<<<<<< HEAD
       <Header />
       <br /><br /><br /><br /><br />
+=======
+>>>>>>> 39a47a9eadd5d456295fcc2e62f0600dd8008107
       <Heading as='h2' size='xl'>
        Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
@@ -105,13 +111,13 @@ const formik = useFormik({
             <Box textAlign='center'>
               <Heading as='h4' size='md'>Daftar</Heading>
               <Text>
-                Sudah punya akun? 
+                Sudah punya akun?  
                 <Link 
                   href='LoginForm.js'
                   color='red'
                   fontWeight="bold"
                   >
-                    Masuk
+                  Masuk
                 </Link>
               </Text>
             </Box>
@@ -191,8 +197,13 @@ const formik = useFormik({
         </Box>
         </Box>
       </Flex>
+<<<<<<< HEAD
       <Footer/>
+=======
+>>>>>>> 39a47a9eadd5d456295fcc2e62f0600dd8008107
     </Flex>
+    <Footer/>
+    </>
   )
 }
 export default  (RegisterForm);

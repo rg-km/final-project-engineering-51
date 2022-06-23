@@ -80,6 +80,9 @@ validateOnMount: true,
   }
 });
   return (
+    <>
+    <Header />
+    <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
       <Header />
       <br /><br /><br /><br /><br />
@@ -104,10 +107,10 @@ validateOnMount: true,
               <Text>
                 Belum punya akun?
                 <Link 
-                  href='RegisterForm.js' 
-                  color='red'
-                  fontWeight="bold"
-                  >
+                href='RegisterForm.js' 
+                color='red'
+                fontWeight="bold"
+                >
                      Daftar Sekarang
                 </Link>
               </Text>
@@ -167,8 +170,9 @@ validateOnMount: true,
         </Box>
         </Box>
       </Flex>
-      <Footer/>
     </Flex>
+    <Footer/>
+    </>
   )
 }
 export default LoginForm;
