@@ -28,23 +28,6 @@ const RegisterForm = () => {
   const Navigate = useNavigate();
   const [validOnChange, setValidOnChange] = React.useState(false);
 
-  // async function signUp(){
-  //   let item={name,email,password}
-  //   console.warn(item)
-
-  //   let result= await fetch("http://localhost:8080/api/user/register",{
-  //     method:"POST",
-  //     body:JSON.stringify(item),
-  //     headers:{
-  //       "Content-Type":"application/json",
-  //       "Accept":"application/json"
-  //     },
-  //   })
-  //   result=await result.json()
-  //   localStorage.setItem("user-info",JSON.stringify(result))
-  //   Navigate("/")
-  // }
-
   async function doregister(values){
     console.log('doregister');
     let item={name: values.name, email : values.email, password : values.password}
