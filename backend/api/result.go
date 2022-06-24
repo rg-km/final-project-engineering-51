@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/rg-km/final-project-engineering-51/backend/repository"
 )
 
 
@@ -13,7 +14,7 @@ type ResultErrorResponse struct {
 }
 
 type AnswerReq struct {
-	Answer [60]bool `json:"answer"`
+	Answers [60]repository.Answer `json:"answers"`
 }
 
 type Result struct {
@@ -26,6 +27,7 @@ type Result struct {
 	NilaiE string `json:"nilai_E"`
 	NilaiC string `json:"nilai_C"`
 	Kategori string `json:"kategori_tertinggi"`
+	Desc string `json:"desc"`
 	Saran1 string `json:"saran_1"`
 	Saran2 string `json:"saran_2"`
 	Saran3 string `json:"saran_3"`
@@ -114,7 +116,7 @@ func (api *API) submit(w http.ResponseWriter, req *http.Request) {
 		_, err = api.resultRepo.FetchNilaiByEmail(claims.Email)
 
 		if err != nil {
-			err = api.resultRepo.Submit(claims.Email,answer.Answer)
+			err = api.resultRepo.Submit(claims.Email,answer.Answers)
 
 			if err != nil {
 				w.WriteHeader(http.StatusBadRequest)
@@ -123,7 +125,7 @@ func (api *API) submit(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		err = api.resultRepo.ReSubmit(claims.Email,answer.Answer)
+		err = api.resultRepo.ReSubmit(claims.Email,answer.Answers)
 
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
@@ -214,6 +216,7 @@ func (api *API) getResult(w http.ResponseWriter, req *http.Request) {
 			NilaiE: nilai.NilaiE,
 			NilaiC: nilai.NilaiC,
 			Kategori: hasil.Kategori,
+			Desc:  hasil.Desc,
 			Saran1: hasil.Saran1,
 			Saran2: hasil.Saran2,
 			Saran3: hasil.Saran3,

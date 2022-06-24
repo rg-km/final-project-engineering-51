@@ -7,9 +7,7 @@ export default class landingPage extends Component {
     render(){
         return(
             <>
-                <Header />
-                <Banner />
-                <Footer />
+                <Banner/>
             </>
         )
     }
