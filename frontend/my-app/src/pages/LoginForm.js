@@ -1,5 +1,7 @@
 import React, { useState, useEffect} from 'react';
 import { useNavigate } from "react-router-dom";
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import {
   Flex,
   Box,
@@ -11,38 +13,65 @@ import {
   Input,
   Stack,
   Checkbox,
-  Button
+  Button,
+  InputGroup,
+  InputRightElement,
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const VARIANT_COLOR = '#C73661';
 
-function LoginForm () {
-  const [email,setEmail]=useState("");
-  const [password,setPassword]=useState("");
+const LoginForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const Navigate = useNavigate();
+  const [validOnChange, setValidOnChange] = React.useState(false);
+
   useEffect(() => {
     if (localStorage.getItem('user-info')){
       Navigate("/")
     }
   },[Navigate])
 
-async function login(){
-  console.warn(email,password)
-  let item={email,password}
+async function dologin(values){
+  console.log('dologin')
+  let item={email : values.email, password : values.password}
   let result = await fetch("http://localhost:8080/api/user/login",{
-    method:"POST",
-    body:JSON.stringify(item),
-    headers:{
-      "Content-Type":"application/json",
-      "Accept":"application/json"
-    },
-  });
-  result = await result.json()
-  localStorage.setItem("user-info",JSON.stringify(result))
-  Navigate("/")
+        method:"POST",
+        body:JSON.stringify(item),
+        headers:{
+          "Content-Type":"application/json",
+          "Accept":"application/json"
+        },
+      });
+      result = await result.json()
+      localStorage.setItem("user-info",JSON.stringify(result))
+      Navigate("/")
+      if(result){
+        setTimeout(() => {
+          formik.setSubmitting(false);
+          formik.resetForm();
+      }, 2000);
+      }
 }
+
+const formik = useFormik({
+  initialValues: {
+      email: '',
+      password: '',
+      remember: false,
+  },
+  validationSchema: Yup.object({
+      email: Yup.string('Format email tidak cocok')
+          .required("Email harus diisi"),
+      password: Yup.string()
+          .required("Password harus diisi")
+  }),
+  onSubmit: (values) => {
+    dologin(values);
+  }
+});
   return (
     <>
     <Header />
@@ -63,7 +92,7 @@ async function login(){
           boxShadow="lg"
         >
         <Box my={8} textAlign='left'>
-          <form>
+          <form onSubmit={formik.handleSubmit}>
             <Box textAlign='center'>
               <Heading as='h4' size='md'>Masuk</Heading>
               <Text>
@@ -77,16 +106,43 @@ async function login(){
                 </Link>
               </Text>
             </Box>
-            <FormControl isRequired mt={4}>
+            <FormControl z-index="-1" isRequired mt={4}>
               <FormLabel>Alamat Email</FormLabel>
-              <Input type='email' placeholder=' ' onChange={(e)=>setEmail(e.target.value)}/>
+              <Input 
+                z-index="-1"
+                type='email' 
+                placeholder=' ' 
+                name="email"
+                value = {formik.values.email}
+                onChange={e => formik.setFieldValue('email', e.target.value)}
+                invalid={formik.errors.email}
+              />
+              {formik.touched.email && formik.errors.email && <div className="error">{formik.errors.email}</div>}
             </FormControl>
 
-            <FormControl isRequired mt={4}>
+            <FormControl id="password"  z-index="-1" isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
-              <Input type='password' placeholder=' ' onChange={(e)=>setPassword(e.target.value)} />
+              <InputGroup>
+                <Input 
+                 z-index="0"
+                  name="password"
+                  type={showPassword ? 'text' : 'password' } 
+                  onChange={e => formik.setFieldValue('password', e.target.value)}
+                invalid={formik.errors.password}
+                />
+                <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }>
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+              {formik.touched.password && formik.errors.password && <div className="error">{formik.errors.password}</div>}
             </FormControl>
-
+                    {console.log(formik)}
             <Stack isInline justifyContent='space-between' mt={4}>
               <Box>
                 <Checkbox>Ingat Saya</Checkbox>
@@ -96,7 +152,20 @@ async function login(){
               </Box>
             </Stack>
 
-            <Button onClick={login} colorScheme='red'  width='full' mt={4}>Masuk</Button>
+            <Button 
+              disabled={formik.isSubmitting} 
+              onClick={() => {
+                if (!validOnChange) {
+                  setValidOnChange(true);
+                }
+              }} 
+              type='submit' 
+              colorScheme='red'  
+              width='full' 
+              mt={4}
+            >
+              Masuk
+            </Button>
           </form>
         </Box>
         </Box>
