@@ -6,6 +6,7 @@ import RegisterForm from "./pages/RegisterForm";
 import ErrorPage from "./pages/ErrorPage";
 import TestOpening from "./pages/TestOpening";
 import TestComplete from "./pages/TestComplete";
+import TestMinatBakat from "./pages/TestMinatBakat";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/login" element={<LoginForm/>} />
             <Route path="/register" element={<RegisterForm/>} />
             <Route path="/test-opening" element={<TestOpening/>} />
+            <Route path="/test-page" element={<TestMinatBakat/>} />
             <Route path="/test-complete" element={<TestComplete/>} />
             <Route path="*" element={<ErrorPage/>}/>
         </Routes>
