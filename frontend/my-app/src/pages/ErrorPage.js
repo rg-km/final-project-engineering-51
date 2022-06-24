@@ -12,7 +12,7 @@ export default function ErrorPage() {
         size="2xl"
         bgGradient="linear(to-r, red.400, red.600)"
         backgroundClip="text">
-        404
+        404 | Not Found
       </Heading>
       <Text fontSize="18px" mt={3} mb={2}>
         Halaman Tidak Ditemukan
