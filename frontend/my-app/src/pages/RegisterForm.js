@@ -80,7 +80,6 @@ const formik = useFormik({
     <Header />
     <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
-      <br /><br />
       <Heading as='h2' size='xl'>
        Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
@@ -105,7 +104,7 @@ const formik = useFormik({
                   href='LoginForm.js'
                   color='red'
                   fontWeight="bold"
-                >
+                  >
                   Masuk
                 </Link>
               </Text>
