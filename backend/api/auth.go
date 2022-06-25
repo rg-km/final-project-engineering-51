@@ -51,59 +51,52 @@ func getSecretKey() string {
 }
 
 func (api *API) login(w http.ResponseWriter, req *http.Request) {
-	api.AllowOrigin(w, req)
-	var user LoginDTO
-	err := json.NewDecoder(req.Body).Decode(&user)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
+    api.AllowOrigin(w, req)
+    var user LoginDTO
+    err := json.NewDecoder(req.Body).Decode(&user)
+    if err != nil {
+        w.WriteHeader(http.StatusBadRequest)
+        return
+    }
 
-	res, err := api.usersRepo.Login(user.Email, user.Password)
+    res, err := api.usersRepo.Login(user.Email, user.Password)
+
+    w.Header().Set("Content-Type", "application/json")
+    encoder := json.NewEncoder(w)
+    if err != nil {
+        w.WriteHeader(http.StatusUnauthorized)
+        encoder.Encode(AuthErrorResponse{Error: err.Error()})
+        return
+    }
+
+    userRole, _ := api.usersRepo.FetchUserRole(*res)
+    // Deklarasi expiry time untuk token jwt
+    expirationTime := time.Now().Add(60 * time.Minute)
+
+    // Buat claim menggunakan variable yang sudah didefinisikan diatas
+    claims := &Claims{
+        Email: *res,
+        Role: *userRole,
+        StandardClaims: jwt.StandardClaims{
+            // expiry time menggunakan time millisecond
+            ExpiresAt: expirationTime.Unix(),
+        },
+    }
+
+     secretKey := getSecretKey()
+
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+    // Buat jwt string dari token yang sudah dibuat menggunakan JWT key yang telah dideklarasikan
+    tokenString, err := token.SignedString([]byte(secretKey))
+    
+    if err != nil {
+        // return internal error ketika ada kesalahan ketika pembuatan JWT string
+        w.WriteHeader(http.StatusInternalServerError)
+        return
+    }
 
 	w.Header().Set("Content-Type", "application/json")
-	encoder := json.NewEncoder(w)
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		encoder.Encode(AuthErrorResponse{Error: err.Error()})
-		return
-	}
-
-	userRole, _ := api.usersRepo.FetchUserRole(*res)
-	// Deklarasi expiry time untuk token jwt
-	expirationTime := time.Now().Add(60 * time.Minute)
-
-	// Buat claim menggunakan variable yang sudah didefinisikan diatas
-	claims := &Claims{
-		Email: *res,
-		Role: *userRole,
-		StandardClaims: jwt.StandardClaims{
-			// expiry time menggunakan time millisecond
-			ExpiresAt: expirationTime.Unix(),
-		},
-	}
-
- 	secretKey := getSecretKey()
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	// Buat jwt string dari token yang sudah dibuat menggunakan JWT key yang telah dideklarasikan
-	tokenString, err := token.SignedString([]byte(secretKey))
-	
-	if err != nil {
-		// return internal error ketika ada kesalahan ketika pembuatan JWT string
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	// Set token string kedalam cookie response
-	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expirationTime,
-		Path:    "/",
-	})
-
 	json.NewEncoder(w).Encode(LoginSuccessResponse{Email: *res, Token: tokenString})
 }
 
@@ -231,14 +224,6 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	// Set token string kedalam cookie response
-	http.SetCookie(w, &http.Cookie{
-		Name:    "token",
-		Value:   tokenString,
-		Expires: expirationTime,
-		Path:    "/",
-	})
 
 	json.NewEncoder(w).Encode(RegisterSuccessResponse{Email: *res, Token: tokenString})
 	w.WriteHeader(http.StatusCreated)
