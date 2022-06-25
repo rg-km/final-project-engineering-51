@@ -8,14 +8,41 @@ import {
   Divider,
   border,
 } from '@chakra-ui/react';
-import * as React from 'react';
+import React, { useRef, useState, useContext, useEffect} from 'react';
 import Complete from '../assets/finish.png';
 import Bg from '../assets/result.jpg';
 import Object from '../assets/result1.png';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+// import { useEffect, useState } from "react";
+import axios from "axios";
 
-function TestComplete() {
+const ResultPage = () =>{
+
+  const[result, setResult] = useState([]);
+
+  const fetchResult = async () => {
+    let auth = localStorage.getItem("token");
+
+    try{
+      let res = await axios.get(`http://localhost:8080/api/test/result`,{
+        headers:{
+          Accept: "/",
+          "Content-Type": "application/json",
+          "Token" : auth,
+        },
+      });
+      console.log(res);
+      setResult(res.data.data);
+    }catch(err){
+      console.log(err);
+    }
+  };
+
+  useEffect(()=>{
+    fetchResult();
+  },[]);
+
   return(
     <>
       <Header />
@@ -100,4 +127,4 @@ function TestComplete() {
   )
 }
 
-export default TestComplete;
+export default ResultPage;

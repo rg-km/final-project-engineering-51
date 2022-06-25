@@ -85,12 +85,12 @@ func (r *ResultRepository) Submit(email string, answer [60]Answer) (error) {
 	VALUES ((SELECT id FROM users WHERE email = ?),?,?,?,?,?,?)`
 
 	_,err = tx.Exec(sqlStatement, email,
-		kategoriMap["Realistic"],
-		kategoriMap["Investigative"],
-		kategoriMap["Artistic"],
-		kategoriMap["Social"],
-		kategoriMap["Enterprising"],
-		kategoriMap["Conventional"],
+		kategoriMap["Realistic"] * 10,
+		kategoriMap["Investigative"] * 10,
+		kategoriMap["Artistic"] * 10,
+		kategoriMap["Social"] * 10,
+		kategoriMap["Enterprising"] * 10,
+		kategoriMap["Conventional"] * 10,
 	)
 
 	if err != nil {
@@ -148,12 +148,12 @@ func (r *ResultRepository) ReSubmit(email string, answer [60]Answer) (error) {
 	WHERE user_id = (SELECT id FROM users WHERE email = ?)`
 
 	_,err = tx.Exec(sqlStmt,
-		kategoriMap["Realistic"],
-		kategoriMap["Investigative"],
-		kategoriMap["Artistic"],
-		kategoriMap["Social"],
-		kategoriMap["Enterprising"],
-		kategoriMap["Conventional"],
+		kategoriMap["Realistic"] * 10,
+		kategoriMap["Investigative"] * 10,
+		kategoriMap["Artistic"] * 10,
+		kategoriMap["Social"] * 10,
+		kategoriMap["Enterprising"] * 10,
+		kategoriMap["Conventional"] * 10,
 		email,
 	)
 

@@ -1,5 +1,3 @@
-import React, { useState, useEffect} from 'react';
-import { useNavigate } from "react-router-dom";
 import {
   Flex,
   Box,
@@ -13,43 +11,68 @@ import {
   Checkbox,
   Button
 } from '@chakra-ui/react';
+import React, { useRef, useContext, useEffect} from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import AuthContext from '../service/AuthContext';
+import { useNavigate } from "react-router-dom";
 
-const VARIANT_COLOR = '#C73661';
+export const LoginForm = () =>{
+  const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+  
+  if (authCtx.isLoggedIn) {
+    navigate("/test-opening");
+  }
 
-function LoginForm () {
-  const [email,setEmail]=useState("");
-  const [password,setPassword]=useState("");
-  const Navigate = useNavigate();
-  useEffect(() => {
-    if (localStorage.getItem('user-info')){
-      Navigate("/")
-    }
-  },[Navigate])
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-async function login(){
-  console.warn(email,password)
-  let item={email,password}
-  let result = await fetch("http://localhost:8080/api/user/login",{
-    method:"POST",
-    body:JSON.stringify(item),
-    headers:{
-      "Content-Type":"application/json",
-      "Accept":"application/json"
-    },
-  });
-  result = await result.json()
-  localStorage.setItem("user-info",JSON.stringify(result))
-  Navigate("/")
-}
+    const enteredEmail = emailInputRef.current.value;
+    const enteredPassword = passwordInputRef.current.value;
+    let auth = localStorage.getItem("token");
+
+    fetch(`http://localhost:8080/api/user/login`, {
+      method: "POST",
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        Accept: "/",
+        "Content-Type": "application/json",
+        "Token": auth,
+      },
+    })
+      .then((response) => {
+        if(response.status === 200){
+            console.log("SUCCESSS")
+            return response.json(); 
+        }else if(response.status === 401){
+            console.log("SOMETHING WENT WRONG")
+            this.setState({ requestFailed: true })
+        }
+      })
+      .then((data) => {
+        console.log(data.token);
+        localStorage.setItem("token", data.token);
+        authCtx.login("token", data.token);
+      })
+      .catch((err) => {
+        alert("Data yang anda masukkan salah");
+      });
+  };
+
   return (
     <>
     <Header />
     <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
       <Heading as='h2' size='xl'>
-      Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
+      Selamat Datang di  <Text as="span" color="#C73661">KenaliAku</Text>
       </Heading>
       <Flex minHeight='90vh' width='full' align='center' justifyContent='center'>
         <Box 
@@ -63,7 +86,7 @@ async function login(){
           boxShadow="lg"
         >
         <Box my={8} textAlign='left'>
-          <form>
+          <form onSubmit={handleSubmit}>
             <Box textAlign='center'>
               <Heading as='h4' size='md'>Masuk</Heading>
               <Text>
@@ -79,12 +102,12 @@ async function login(){
             </Box>
             <FormControl isRequired mt={4}>
               <FormLabel>Alamat Email</FormLabel>
-              <Input type='email' placeholder=' ' onChange={(e)=>setEmail(e.target.value)}/>
+              <Input type='email' placeholder=' ' ref={emailInputRef}/>
             </FormControl>
 
             <FormControl isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
-              <Input type='password' placeholder=' ' onChange={(e)=>setPassword(e.target.value)} />
+              <Input type='password' placeholder=' ' ref={passwordInputRef}/>
             </FormControl>
 
             <Stack isInline justifyContent='space-between' mt={4}>
@@ -92,11 +115,11 @@ async function login(){
                 <Checkbox>Ingat Saya</Checkbox>
               </Box>
               <Box>
-                <Link color={`${VARIANT_COLOR}.500`}>Lupa Kata Sandi?</Link>
+                <Link color="#C73661.500">Lupa Kata Sandi?</Link>
               </Box>
             </Stack>
 
-            <Button onClick={login} colorScheme='red'  width='full' mt={4}>Masuk</Button>
+            <Button type="submit" colorScheme='red'  width='full' mt={4}>Masuk</Button>
           </form>
         </Box>
         </Box>
@@ -104,6 +127,6 @@ async function login(){
     </Flex>
     <Footer/>
     </>
-  )
-}
+  );
+};
 export default LoginForm;
