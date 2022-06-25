@@ -2,7 +2,6 @@ import {
     Box,
     Image,
     Button,
-    Link,
     Text,
     Heading,
     Stack,
@@ -10,8 +9,8 @@ import {
 import Header from './Header';
 import Footer from './Footer';
 import illustration from '../assets/banner.png';
-import * as React from 'react';
 import { Link } from 'react-router-dom';
+import * as React from 'react';
 
 function Banner(){
     return(
