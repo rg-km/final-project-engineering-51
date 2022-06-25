@@ -101,34 +101,19 @@ func (api *API) login(w http.ResponseWriter, req *http.Request) {
 }
 
 func (api *API) logout(w http.ResponseWriter, req *http.Request) {
-	api.AllowOrigin(w, req)
 	encoder := json.NewEncoder(w)
-	token, err := req.Cookie("token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			// return unauthorized ketika token kosong
+		// Ambil token dari cookie yang dikirim ketika request
+		if req.Header["Token"] == nil {
 			w.WriteHeader(http.StatusUnauthorized)
-			encoder.Encode(AuthErrorResponse{Error: err.Error()})
-			return
-		}
-		// return bad request ketika field token tidak ada
-		w.WriteHeader(http.StatusBadRequest)
-		encoder.Encode(AuthErrorResponse{Error: err.Error()})
-		return
-	}
-	
-	if token.Value == "" {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	
-	tknStr := token.Value
-
+				encoder.Encode(AuthErrorResponse{Error: "No Token"})
+				return
+  }
+  	
 		claims := &Claims{}
 
 		secretKey := getSecretKey()
 		//parse JWT token ke dalam claim
-		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		tkn, err := jwt.ParseWithClaims(req.Header["Token"][0], claims, func(token *jwt.Token) (interface{}, error) {
 			return []byte(secretKey), nil
 		})
 
@@ -159,12 +144,6 @@ func (api *API) logout(w http.ResponseWriter, req *http.Request) {
 		encoder.Encode(AuthErrorResponse{Error: err.Error()})
 		return
 	}
-
-	c := http.Cookie{
-		Name:   "token",
-		MaxAge: -1,
-	}
-	http.SetCookie(w, &c)
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("logged out"))
