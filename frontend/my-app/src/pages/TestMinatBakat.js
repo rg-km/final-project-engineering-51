@@ -35,18 +35,6 @@ function TestMinatBakat() {
             </Text>
           </Box>
 
-          {/* <Flex alignItems='center' gap={3}>
-            <Box>
-              <Text>
-                Progress
-              </Text>
-            </Box>
-            <Progress colorScheme='yellow' size='sm' w='500px' value={20} />
-            <Box>
-              <Text>2/10</Text>
-            </Box>
-          </Flex> */}
-
           <Flex w='2xl' flexDirection='column'>
             {
               soal.map((e) => (
