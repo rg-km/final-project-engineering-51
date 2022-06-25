@@ -15,15 +15,16 @@ function TestComplete() {
   return(
     <>
       <Header />
-      <Box className='test-complete' bg='#F9F9F9' w='100%' py={16} px={36} color='black'>
+      <br/>
+      <Box className='test-complete' w='100%' py={16} px={36} color='black'>
         <Flex textAlign='center' alignItems='center' flexDirection='column' gap={12}>
           <Heading as='h1' size='lg'>
             Hore! Kamu berhasil menyelesaikan seluruh tes
           </Heading>
-          <Image src={Complete} alt='Complete' />
+          <Image w="40%" src={Complete} alt='Complete' />
           <Text w='2xl'>
             Sekarang kamu dapat melihat hasil dan penjelasan lebih lanjut mengenai minat 
-            dan bakatkamu dengan menekan tombol dibawah ini.
+            dan bakat kamu dengan menekan tombol dibawah ini.
           </Text>
           <Box>
             <Button colorScheme="gray.600" backgroundColor='primary.500'>
