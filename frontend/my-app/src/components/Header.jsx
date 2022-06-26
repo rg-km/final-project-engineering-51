@@ -8,19 +8,47 @@ import {
     MenuList,
     MenuItem,
     Avatar,
+    WrapItem
 }
 from '@chakra-ui/react';
-import * as React from 'react';
+import React, { useState, useEffect} from 'react';
+import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 
-function Header(){
+const Header = () =>{
     let navigate = useNavigate();
     let user = JSON.parse(localStorage.getItem('user-info'));
-    const Navigate = useNavigate();
     function logOut(){
-        localStorage.clear();
-        Navigate("/")
+        localStorage.removeItem("token");
+        navigate("/")
     }
+
+    const[result, setResult] = useState([]);
+    // let state = {
+    //     result: null
+    //   }
+    const fetchResult = () => {
+        let auth = localStorage.getItem("token");
+        
+        axios.get(`http://localhost:8080/api/user/profile`,{
+        headers:{
+            Accept: "/",
+            "Content-Type": "application/json",
+            "Token" : auth,
+        },
+        })
+        .then((res)=>{
+            console.log(res);
+            console.log(res.data.user_profile);
+            const hasil = res.data.user_profile;
+            setResult(hasil);
+            // this.setState({
+            //   result: res.data.result
+            // })
+        });
+    };
+
+    useEffect(()=> fetchResult(),[]);
 
     return(
     <>
@@ -30,27 +58,35 @@ function Header(){
                     <Box>
                         <Text fontWeight="bold" color="#C73661" fontSize='5xl'>KenaliAku</Text>
                     </Box>
-                    <Box display="flex" alignItems="center">
-                        <Link href="#banner" mr={5} colorScheme="gray.600" fontSize="1xl" >Beranda</Link>
-                        <Link href="#about" mr={5} colorScheme="gray.600" fontSize="1xl" >Tentang</Link>
-                        <Link href="#service" mr={5} colorScheme="gray.600" fontSize="1xl" >Layanan</Link>
                         {
-                        localStorage.getItem('user-info') ?
+                        localStorage.getItem('token') ?
                         <>
                             <Menu>
-                            <MenuButton as={Button} title={user && user.name}>
-                                Keluar
-                            </MenuButton>
-                            <MenuList >
-                                <MenuItem minH='48px' onClick={logOut}>
-                                <Avatar bg='red.500' />
-                                <span>Keluar</span>
-                                </MenuItem>
-                            </MenuList>
+                                <MenuButton>
+                                    <WrapItem alignItems="center"  display="flex" flexDirection="row" gap={3}>
+                                        <Avatar
+                                        size='md'
+                                        name={result.fullname}
+                                        src='https://bit.ly/tioluwani-kolawole'
+                                        />{' '}
+                                        <Text fontSize="2xl">{result.fullname}</Text>
+                                    </WrapItem>
+                                </MenuButton>
+                                <MenuList >
+                                    <MenuItem minH='48px' onClick={logOut}>
+                                    <span>Keluar sebagai {result.email} </span>
+                                    </MenuItem>
+                                </MenuList>
                             </Menu>
                         </> 
                         :
                         <>
+                        <Box display="flex" alignItems="center" justifyContent="flex-end">
+                            <Box display="flex" alignItems="center">
+                            <Link href="#banner" mr={5} colorScheme="gray.600" fontSize="1xl" >Beranda</Link>
+                            <Link href="#about" mr={5} colorScheme="gray.600" fontSize="1xl" >Tentang</Link>
+                            <Link href="#service" mr={5} colorScheme="gray.600" fontSize="1xl" >Layanan</Link>
+                            </Box>
                             <Button 
                             mr={5} 
                             colorScheme="gray.600" 
@@ -69,11 +105,9 @@ function Header(){
                             >
                                 Masuk
                             </Button>
+                        </Box>
                         </>
                     }
-                        
-                        
-                    </Box>
                 </Box>
             </Box>
         </header>
