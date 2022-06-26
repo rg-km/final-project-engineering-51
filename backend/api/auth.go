@@ -179,13 +179,6 @@ func (api *API) register(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	err = api.usersRepo.ChangeStatus(true, *res) 
-	if err != nil {
-		encoder.Encode(AuthErrorResponse{Error: err.Error()})
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
 	// Deklarasi expiry time untuk token jwt
 	expirationTime := time.Now().Add(60 * time.Minute)
 
