@@ -10,8 +10,11 @@ import {
   Stack,
   Checkbox,
   Button,
+  InputGroup,
+  InputRightElement,
 } from '@chakra-ui/react';
-import React, { useRef} from 'react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import React, { useRef, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useNavigate } from "react-router-dom";
@@ -20,13 +23,14 @@ export const LoginForm = () =>{
   const navigate = useNavigate();
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-  
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
     let auth = localStorage.getItem("token");
+    
     fetch(`http://localhost:8080/api/user/login`, {
       method: "POST",
       body: JSON.stringify({
@@ -100,8 +104,23 @@ export const LoginForm = () =>{
 
             <FormControl isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
-              <Input type='password' placeholder=' ' ref={passwordInputRef}/>
+              <InputGroup>
+                <Input 
+                  type={showPassword ? 'text' : 'password' } 
+                  ref={passwordInputRef} 
+                />
+                <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }>
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
             </FormControl>
+
             
             <Stack isInline justifyContent='space-between' mt={4}>
               <Box>

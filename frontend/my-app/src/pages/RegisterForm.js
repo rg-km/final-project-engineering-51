@@ -8,8 +8,11 @@ import {
   FormLabel,
   FormHelperText,
   Input,
-  Button
+  Button,
+  InputGroup,
+  InputRightElement,
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import React ,{ useState, useEffect } from 'react';
@@ -25,6 +28,7 @@ export default function RegisterForm ()  {
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [cPasswordClass, setCPasswordClass] = useState('form-control');
   const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const Navigate = useNavigate();
   
   useEffect(() => {
@@ -145,6 +149,24 @@ export default function RegisterForm ()  {
                 onChange={(e)=>setPassword(e.target.value)}
               />
             </FormControl>
+            
+              //<InputGroup>
+                //<Input 
+                  //type={showPassword ? 'text' : 'password' } 
+                  //value={Password}
+                  //onChange={(e)=>setPassword(e.target.value)} 
+                ///>
+                //<InputRightElement h={'full'}>
+                  //<Button
+                    //variant={'ghost'}
+                    //onClick={() =>
+                      //setShowPassword((showPassword) => !showPassword)
+                    //}>
+                    //{showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  //</Button>
+                //</InputRightElement>
+              //</InputGroup>
+             // <FormHelperText>Minimal 6 Karakter</FormHelperText>
 
             <FormControl isRequired mt={4}>
               <FormLabel>Konfirmasi Kata Sandi</FormLabel>
@@ -157,6 +179,25 @@ export default function RegisterForm ()  {
                 value={cPassword} 
                 onChange={(e) => { setCPassword(e.target.value) }}
               />
+              
+              //<InputGroup>
+                //<Input 
+                  //type={showPassword ? 'text' : 'password' } 
+                  //value={cPassword}
+                  //className={cPassword}
+                  //onChange={(e) => { setCPassword(e.target.value) }}
+                ///>
+                //<InputRightElement h={'full'}>
+                  //<Button
+                    //variant={'ghost'}
+                    //onClick={() =>
+                      //setShowPassword((showPassword) => !showPassword)
+                    //}>
+                    //{showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  //</Button>
+                //</InputRightElement>
+              //</InputGroup>
+              
             </FormControl>
             {showErrorMessage && isCPasswordDirty ? <div><a style={{color:"red"}}>Kata Sandi Tidak Cocok </a></div> : ''}
 
