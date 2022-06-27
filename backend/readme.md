@@ -7,7 +7,7 @@ Beberapa fitur yang terdapat pada web ini antara lain :
 - Menampilkan profile pengguna 
 - Terdapat 60 soal untuk tes minat dan bakat
 - Menampilkan hasil dari tes
-- Terdapat 3 saran jurusan kuliah berdasarkan hasil tes minat dan bakat
+- Terdapat 4 saran jurusan kuliah berdasarkan hasil tes minat dan bakat
 
 ![KenaliAku](https://user-images.githubusercontent.com/100753971/175831716-56e0fd0b-4636-489a-9089-8944a5629723.jpg)
 
