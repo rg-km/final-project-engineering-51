@@ -58,27 +58,17 @@ func (api *API) AuthMiddleWare(next http.Handler) http.Handler {
 		api.AllowOrigin(w, r)
 		encoder := json.NewEncoder(w)
 		// Ambil token dari cookie yang dikirim ketika request
-		c, err := r.Cookie("token")
-		if err != nil {
-			if err == http.ErrNoCookie {
-				// return unauthorized ketika token kosong
-				w.WriteHeader(http.StatusUnauthorized)
-				encoder.Encode(AuthErrorResponse{Error: err.Error()})
+		if r.Header["Token"] == nil {
+			w.WriteHeader(http.StatusUnauthorized)
+				encoder.Encode(AuthErrorResponse{Error: "No Token"})
 				return
-			}
-			// return bad request ketika field token tidak ada
-			w.WriteHeader(http.StatusBadRequest)
-			encoder.Encode(AuthErrorResponse{Error: err.Error()})
-			return
-		}
-
-		tknStr := c.Value
-
+  }
+  	
 		claims := &Claims{}
 
 		secretKey := getSecretKey()
 		//parse JWT token ke dalam claim
-		tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		tkn, err := jwt.ParseWithClaims(r.Header["Token"][0], claims, func(token *jwt.Token) (interface{}, error) {
 			return []byte(secretKey), nil
 		})
 

@@ -26,7 +26,7 @@ export default function RegisterForm ()  {
   const [cPasswordClass, setCPasswordClass] = useState('form-control');
   const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
   const Navigate = useNavigate();
-
+  
   useEffect(() => {
     if (isCPasswordDirty) {
         if (Password === cPassword) {
@@ -43,7 +43,7 @@ export default function RegisterForm ()  {
     setCPassword(e.target.value);
     setIsCPasswordDirty(true);
   }
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -73,23 +73,6 @@ export default function RegisterForm ()  {
         "Username / Email Sudah terdaftar"
       );
     }
-
-
-
-    // let item={name,email,password}
-    // console.warn(item)
-
-    // let result= await fetch("http://localhost:8080/api/user/register",{
-    //   method:"POST",
-    //   body:JSON.stringify(item),
-    //   headers:{
-    //     "Content-Type":"application/json",
-    //     "Accept":"application/json"
-    //   },
-    // })
-    // result=await result.json()
-    // localStorage.setItem("user-info",JSON.stringify(result))
-    // Navigate("/")
   };
 
   return (
@@ -158,7 +141,7 @@ export default function RegisterForm ()  {
                 type='password' 
                 name='password'
                 value={Password}
-                placeholder='masukkan password' 
+                placeholder='masukkan password'
                 onChange={(e)=>setPassword(e.target.value)}
               />
             </FormControl>
@@ -172,7 +155,7 @@ export default function RegisterForm ()  {
                 className={cPasswordClass}
                 placeholder='masukkan password konfirmasi' 
                 value={cPassword} 
-                onChange={handleCPassword}
+                onChange={(e) => { setCPassword(e.target.value) }}
               />
             </FormControl>
             {showErrorMessage && isCPasswordDirty ? <div><a style={{color:"red"}}>Kata Sandi Tidak Cocok </a></div> : ''}

@@ -6,6 +6,7 @@ import {
   Heading,
   Flex,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import Petunjuk1 from '../assets/petunjuk-1.png';
 import Petunjuk2 from '../assets/petunjuk-2.png';
 import Petunjuk3 from '../assets/petunjuk-3.png';
@@ -15,16 +16,19 @@ import Header from '../components/Header';
 function TestOpening() {
   const property = [
     {
+      id: 1,
       imageUrl: Petunjuk1,
       imageAlt: 'petunjuk-1',
       text: 'Tes ini terdiri dari xx pertanyaan, umumnya memakan waktu selama 10 menit.'
     },
     {
+      id: 2,
       imageUrl: Petunjuk2,
       imageAlt: 'petunjuk-2',
       text: 'Jika pernyataan di dalam soal sesuai dengan diri kamu, pilih “YA”. Jika tidak sesuai dengan kamu, pilih “TIDAK”'
     },
     {
+      id: 3,
       imageUrl: Petunjuk3,
       imageAlt: 'petunjuk-3',
       text: 'Tidak ada jawaban benar maupun salah, pilihlah jawaban yang sesuai dengan diri kamu.'
@@ -49,7 +53,7 @@ function TestOpening() {
           <Flex className='guide-container' gap={9}>
             {
               property.map((el) => (
-                <Box w='100%'>
+                <Box w='100%' key={el.id}>
                   <Image
                     w='100%'
                     objectFit='cover'
@@ -67,9 +71,11 @@ function TestOpening() {
             }
           </Flex>
           <Box>
-            <Button colorScheme="gray.600" backgroundColor='primary.500'>
-              MULAI TES SEKARANG
-            </Button>
+            <Link to='/test-page-1'>
+              <Button colorScheme="gray.600" backgroundColor='primary.500'>
+                MULAI TES SEKARANG
+              </Button>
+            </Link>
           </Box>
         </Flex>
       </Box>

@@ -9,7 +9,7 @@ import {
   Input,
   Stack,
   Checkbox,
-  Button
+  Button,
 } from '@chakra-ui/react';
 import React, { useRef} from 'react';
 import Header from '../components/Header';
@@ -20,14 +20,13 @@ export const LoginForm = () =>{
   const navigate = useNavigate();
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-
+  
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
     let auth = localStorage.getItem("token");
-
     fetch(`http://localhost:8080/api/user/login`, {
       method: "POST",
       body: JSON.stringify({
@@ -103,7 +102,7 @@ export const LoginForm = () =>{
               <FormLabel>Kata Sandi</FormLabel>
               <Input type='password' placeholder=' ' ref={passwordInputRef}/>
             </FormControl>
-
+            
             <Stack isInline justifyContent='space-between' mt={4}>
               <Box>
                 <Checkbox>Ingat Saya</Checkbox>

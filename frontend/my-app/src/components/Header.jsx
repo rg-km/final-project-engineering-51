@@ -85,6 +85,12 @@ const Header = () =>{
                         </> 
                         :
                         <>
+                        <Box display="flex" alignItems="center" justifyContent="flex-end">
+                            <Box display="flex" alignItems="center">
+                            <Link href="#banner" mr={5} colorScheme="gray.600" fontSize="1xl" >Beranda</Link>
+                            <Link href="#about" mr={5} colorScheme="gray.600" fontSize="1xl" >Tentang</Link>
+                            <Link href="#service" mr={5} colorScheme="gray.600" fontSize="1xl" >Layanan</Link>
+                            </Box>
                             <Button 
                             mr={5} 
                             colorScheme="gray.600" 
@@ -103,6 +109,7 @@ const Header = () =>{
                             >
                                 Masuk
                             </Button>
+                        </Box>
                         </>
                         }
                     </Box>
