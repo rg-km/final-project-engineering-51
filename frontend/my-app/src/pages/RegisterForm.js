@@ -1,5 +1,3 @@
-import React ,{ useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Flex,
   Box,
@@ -13,14 +11,16 @@ import {
   Button
 } from '@chakra-ui/react';
 import Header from '../components/Header';
-
-
+import Footer from '../components/Footer';
+import React ,{ useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 const VARIANT_COLOR = '#C73661';
 
-function RegisterForm ()  {
-  const [name,setName]=useState("")
-  const [email,setEmail]=useState("")
-  const [password,setPassword]=useState("")
+export default function RegisterForm ()  {
+  const [Fullname,setFullname]=useState("")
+  const [Email,setEmail]=useState("")
+  const [Password,setPassword]=useState("")
   const [cPassword, setCPassword] = useState('');
   const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [cPasswordClass, setCPasswordClass] = useState('form-control');
@@ -29,7 +29,7 @@ function RegisterForm ()  {
 
   useEffect(() => {
     if (isCPasswordDirty) {
-        if (password === cPassword) {
+        if (Password === cPassword) {
             setShowErrorMessage(false);
             setCPasswordClass('form-control is-valid')
         } else {
@@ -37,33 +37,66 @@ function RegisterForm ()  {
             setCPasswordClass('form-control is-invalid')
         }
     }
-  }, [cPassword, isCPasswordDirty, password]);
+  }, [cPassword, isCPasswordDirty, Password]);
 
   const handleCPassword = (e) => {
     setCPassword(e.target.value);
     setIsCPasswordDirty(true);
   }
 
-  async function signUp(){
-    let item={name,email,password}
-    console.warn(item)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let res = await axios.post(`http://localhost:8080/api/user/register`,
+        {
+          Fullname: Fullname,
+          Email: Email,
+          Password: Password,
+          Role: "student",
+        },
+        {
+          headers: {
+            Accept: "/",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(res);
+      if (res.data.error) {
+        alert(res.data.error);
+      }else if(res.status === 200){
+        alert("yeay! kamu berhasil daftar. silahkan login...");
+        Navigate("/login");
+      }
+    } catch (error) {
+      alert(
+        "Username / Email Sudah terdaftar"
+      );
+    }
 
-    let result= await fetch("http://localhost:8080/api/user/register",{
-      method:"POST",
-      body:JSON.stringify(item),
-      headers:{
-        "Content-Type":"application/json",
-        "Accept":"application/json"
-      },
-    })
-    result=await result.json()
-    localStorage.setItem("user-info",JSON.stringify(result))
-    Navigate("/")
-  }
+
+
+    // let item={name,email,password}
+    // console.warn(item)
+
+    // let result= await fetch("http://localhost:8080/api/user/register",{
+    //   method:"POST",
+    //   body:JSON.stringify(item),
+    //   headers:{
+    //     "Content-Type":"application/json",
+    //     "Accept":"application/json"
+    //   },
+    // })
+    // result=await result.json()
+    // localStorage.setItem("user-info",JSON.stringify(result))
+    // Navigate("/")
+  };
+
   return (
+    <>
+    <Header />
+    <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
-      <Header />
-      <br /><br /><br />
       <Heading as='h2' size='xl'>
        Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
       </Heading>
@@ -79,17 +112,17 @@ function RegisterForm ()  {
           boxShadow="lg"
         >
         <Box my={8} textAlign='left'>
-          <form>
+          <form onSubmit={handleSubmit}>
             <Box textAlign='center'>
               <Heading as='h4' size='md'>Daftar</Heading>
               <Text>
-                Sudah punya akun? 
+                Sudah punya akun?  
                 <Link 
                   href='LoginForm.js'
                   color='red'
                   fontWeight="bold"
                   >
-                    Masuk
+                  Masuk
                 </Link>
               </Text>
             </Box>
@@ -97,19 +130,23 @@ function RegisterForm ()  {
             <FormControl isRequired mt={4}>
               <FormLabel >Nama Lengkap</FormLabel>
               <Input 
-                id='name' 
-                placeholder=' ' 
-                value={name} 
-                onChange={(e)=>setName(e.target.value)}
+                type='text'
+                id='Fullname'
+                name='Fullname'
+                value={Fullname}
+                placeholder='masukkan nama panjang anda' 
+                onChange={(e)=>setFullname(e.target.value)}
               />
             </FormControl>
 
             <FormControl isRequired mt={4}>
               <FormLabel>Alamat Email</FormLabel>
               <Input 
-                type='email' 
-                placeholder=' ' 
-                value={email} 
+                type='email'
+                id='Email' 
+                name='Email'
+                value={Email}
+                placeholder='masukkan email anda'
                 onChange={(e)=>setEmail(e.target.value)}
               />
             </FormControl>
@@ -119,35 +156,34 @@ function RegisterForm ()  {
               <Input 
                 id='password' 
                 type='password' 
-                placeholder=' ' 
-                value={password} 
+                name='password'
+                value={Password}
+                placeholder='masukkan password' 
                 onChange={(e)=>setPassword(e.target.value)}
               />
-              <FormHelperText>Minimal 6 Karakter</FormHelperText>
             </FormControl>
 
             <FormControl isRequired mt={4}>
               <FormLabel>Konfirmasi Kata Sandi</FormLabel>
               <Input 
-                type='password' 
+                type='password'
+                id='cPassword' 
+                name='cPassword'
                 className={cPasswordClass}
-                placeholder=' ' 
+                placeholder='masukkan password konfirmasi' 
                 value={cPassword} 
                 onChange={handleCPassword}
               />
             </FormControl>
-            {showErrorMessage && isCPasswordDirty ? <div> Kata Sandi Tidak Cocok </div> : ''}
+            {showErrorMessage && isCPasswordDirty ? <div><a style={{color:"red"}}>Kata Sandi Tidak Cocok </a></div> : ''}
 
-            <Button onClick={signUp} colorScheme='red'  width='full' mt={6}>Daftar</Button>
+            <Button type='submit' colorScheme='red'  width='full' mt={6}>Daftar</Button>
           </form>
         </Box>
         </Box>
       </Flex>
-      <div>
-        &copy; {new Date().getFullYear()} Copyright 2022 • All rights reserved • KenaliAku
-      </div>
-      <br /><br />
     </Flex>
+    <Footer/>
+    </>
   )
 }
-export default  (RegisterForm);
