@@ -93,9 +93,7 @@ function TestPage6() {
           <Box>
             <Link to='/test-complete'>
               <Button colorScheme="gray.600" 
-                backgroundColor='primary.500' 
-                isDisabled={isDisabled} 
-                onClick={() => resetProgress()}>
+                backgroundColor='primary.500'>
                 SELESAI
               </Button>
             </Link>
