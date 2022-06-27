@@ -31,7 +31,7 @@ export const LoginForm = () =>{
     const enteredEmail = emailInputRef.current.value;
     const enteredPassword = passwordInputRef.current.value;
     let auth = localStorage.getItem("token");
-    
+
     fetch(`http://localhost:8080/api/user/login`, {
       method: "POST",
       body: JSON.stringify({
@@ -90,7 +90,7 @@ export const LoginForm = () =>{
               <Text>
                 Belum punya akun?
                 <Link 
-                href='RegisterForm.js' 
+                to='/register' 
                 color='red'
                 fontWeight="bold"
                 >

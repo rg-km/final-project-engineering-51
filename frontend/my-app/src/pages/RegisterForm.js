@@ -3,7 +3,6 @@ import {
   Box,
   Heading,
   Text,
-  Link,
   FormControl,
   FormLabel,
   FormHelperText,
@@ -15,8 +14,8 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import React ,{ useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React ,{ useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from "axios";
 const VARIANT_COLOR = '#C73661';
 
@@ -27,6 +26,7 @@ export default function RegisterForm ()  {
   const [cPassword, setCPassword] = useState('');
   const Navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [showcPassword, setShowCPassword] = useState(false);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,7 +92,7 @@ export default function RegisterForm ()  {
               <Text>
                 Sudah punya akun?  
                 <Link 
-                  href='LoginForm.js'
+                  to='/login'
                   color='red'
                   fontWeight="bold"
                   >
@@ -108,7 +108,7 @@ export default function RegisterForm ()  {
                 id='Fullname'
                 name='Fullname'
                 value={Fullname}
-                placeholder='masukkan nama panjang anda' 
+                placeholder=' ' 
                 onChange={(e)=>setFullname(e.target.value)}
               />
             </FormControl>
@@ -120,21 +120,13 @@ export default function RegisterForm ()  {
                 id='Email' 
                 name='Email'
                 value={Email}
-                placeholder='masukkan email anda'
+                placeholder=' '
                 onChange={(e)=>setEmail(e.target.value)}
               />
             </FormControl>
             
             <FormControl isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
-              {/* <Input 
-                id='password' 
-                type='password' 
-                name='password'
-                value={Password}
-                placeholder='masukkan password'
-                onChange={(e)=>setPassword(e.target.value)}
-              /> */}
               <InputGroup>
                 <Input 
                   type={showPassword ? 'text' : 'password' } 
@@ -156,18 +148,9 @@ export default function RegisterForm ()  {
 
             <FormControl isRequired mt={4}>
               <FormLabel>Konfirmasi Kata Sandi</FormLabel>
-              {/* <Input 
-                type='password'
-                id='cPassword' 
-                name='cPassword'
-                className={cPasswordClass}
-                placeholder='masukkan password konfirmasi' 
-                value={cPassword} 
-                onChange={(e) => { setCPassword(e.target.value) }}
-              /> */}
               <InputGroup>
                 <Input 
-                  type={showPassword ? 'text' : 'password' } 
+                  type={showcPassword ? 'text' : 'password' } 
                   value={cPassword}
                   className={cPassword}
                   onChange={(e) => { setCPassword(e.target.value) }}
@@ -176,9 +159,9 @@ export default function RegisterForm ()  {
                   <Button
                     variant={'ghost'}
                     onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
+                      setShowCPassword((showcPassword) => !showcPassword)
                     }>
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    {showcPassword ? <ViewIcon /> : <ViewOffIcon />}
                   </Button>
                 </InputRightElement>
               </InputGroup>
