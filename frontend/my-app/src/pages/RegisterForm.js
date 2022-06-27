@@ -6,10 +6,12 @@ import {
   Link,
   FormControl,
   FormLabel,
-  FormHelperText,
   Input,
-  Button
+  Button,
+  InputGroup,
+  InputRightElement,
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import React ,{ useState, useEffect } from 'react';
@@ -26,6 +28,7 @@ export default function RegisterForm ()  {
   const [cPasswordClass, setCPasswordClass] = useState('form-control');
   const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
   const Navigate = useNavigate();
+  const [validOnChange, setValidOnChange] = React.useState(false);
 
   useEffect(() => {
     if (isCPasswordDirty) {
@@ -136,6 +139,7 @@ export default function RegisterForm ()  {
                 placeholder='masukkan nama panjang anda' 
                 onChange={(e)=>setFullname(e.target.value)}
               />
+              {formik.touched.name && formik.errors.name && <div className="error">{formik.errors.name}</div>}
             </FormControl>
 
             <FormControl isRequired mt={4}>
@@ -148,9 +152,10 @@ export default function RegisterForm ()  {
                 placeholder='masukkan email anda'
                 onChange={(e)=>setEmail(e.target.value)}
               />
+              {formik.touched.email && formik.errors.email && <div className="error">{formik.errors.email}</div>}
             </FormControl>
-            
-            <FormControl isRequired mt={4}>
+
+            <FormControl id="password" isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
               <Input 
                 id='password' 

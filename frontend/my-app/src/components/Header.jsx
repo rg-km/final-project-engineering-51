@@ -52,7 +52,7 @@ const Header = () =>{
 
     return(
     <>
-        <header zIndex="1" as="header" position="fixed">
+        <header  z-index="10" as="header" position="fixed">
             <Box boxShadow='2xl' as="header" position="fixed" w="100%" backgroundColor="white">
                 <Box display="flex" alignItems="center" justifyContent="space-between" ml={70} mr={70}>
                     <Box>
