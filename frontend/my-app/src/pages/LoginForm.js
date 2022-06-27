@@ -1,7 +1,3 @@
-import React, { useState, useEffect} from 'react';
-import { useNavigate } from "react-router-dom";
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import {
   Flex,
   Box,
@@ -17,68 +13,62 @@ import {
   InputGroup,
   InputRightElement,
 } from '@chakra-ui/react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import React, { useRef} from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { useNavigate } from "react-router-dom";
 
-const VARIANT_COLOR = '#C73661';
+export const LoginForm = () =>{
+  const navigate = useNavigate();
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
 
-const LoginForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const Navigate = useNavigate();
-  const [validOnChange, setValidOnChange] = React.useState(false);
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  useEffect(() => {
-    if (localStorage.getItem('user-info')){
-      Navigate("/")
-    }
-  },[Navigate])
+    const enteredEmail = emailInputRef.current.value;
+    const enteredPassword = passwordInputRef.current.value;
+    let auth = localStorage.getItem("token");
 
-async function dologin(values){
-  console.log('dologin')
-  let item={email : values.email, password : values.password}
-  let result = await fetch("http://localhost:8080/api/user/login",{
-        method:"POST",
-        body:JSON.stringify(item),
-        headers:{
-          "Content-Type":"application/json",
-          "Accept":"application/json"
-        },
-      });
-      result = await result.json()
-      localStorage.setItem("user-info",JSON.stringify(result))
-      Navigate("/")
-      if(result){
-        setTimeout(() => {
-          formik.setSubmitting(false);
-          formik.resetForm();
-      }, 2000);
-      }
-}
+    fetch(`http://localhost:8080/api/user/login`, {
+      method: "POST",
+      body: JSON.stringify({
+        email: enteredEmail,
+        password: enteredPassword,
+        returnSecureToken: true,
+      }),
+      headers: {
+        Accept: "/",
+        "Content-Type": "application/json",
+        "Token": auth,
+      },
+    })
+      .then((response) => {
+        if(response.status === 200){
+            console.log("SUCCESSS")
+            navigate("/test-opening");
+            return response.json(); 
+        }else if(response.status === 401){
+            console.log("SOMETHING WENT WRONG")
+            this.setState({ requestFailed: true })
+        }
+      })
+      .then((data) => {
+        console.log(data.token);
+        localStorage.setItem("token", data.token);
+      })
+      .catch((err) => {
+        alert("Data yang anda masukkan salah");
+      })
+  };
 
-const formik = useFormik({
-  initialValues: {
-      email: '',
-      password: '',
-      remember: false,
-  },
-  validationSchema: Yup.object({
-      email: Yup.string('Format email tidak cocok')
-          .required("Email harus diisi"),
-      password: Yup.string()
-          .required("Password harus diisi")
-  }),
-  onSubmit: (values) => {
-    dologin(values);
-  }
-});
   return (
     <>
     <Header />
     <br/><br/><br/><br/>
     <Flex direction="column" justifyContent='center' textAlign='center'>
       <Heading as='h2' size='xl'>
-      Selamat Datang di  <Text as="span" color={`${VARIANT_COLOR}`}>KenaliAku</Text>
+      Selamat Datang di  <Text as="span" color="#C73661">KenaliAku</Text>
       </Heading>
       <Flex minHeight='90vh' width='full' align='center' justifyContent='center'>
         <Box 
@@ -92,7 +82,7 @@ const formik = useFormik({
           boxShadow="lg"
         >
         <Box my={8} textAlign='left'>
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <Box textAlign='center'>
               <Heading as='h4' size='md'>Masuk</Heading>
               <Text>
@@ -108,39 +98,12 @@ const formik = useFormik({
             </Box>
             <FormControl z-index="-1" isRequired mt={4}>
               <FormLabel>Alamat Email</FormLabel>
-              <Input 
-                z-index="-1"
-                type='email' 
-                placeholder=' ' 
-                name="email"
-                value = {formik.values.email}
-                onChange={e => formik.setFieldValue('email', e.target.value)}
-                invalid={formik.errors.email}
-              />
-              {formik.touched.email && formik.errors.email && <div className="error">{formik.errors.email}</div>}
+              <Input type='email' placeholder=' ' ref={emailInputRef}/>
             </FormControl>
 
             <FormControl id="password"  z-index="-1" isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
-              <InputGroup>
-                <Input 
-                 z-index="0"
-                  name="password"
-                  type={showPassword ? 'text' : 'password' } 
-                  onChange={e => formik.setFieldValue('password', e.target.value)}
-                invalid={formik.errors.password}
-                />
-                <InputRightElement h={'full'}>
-                  <Button
-                    variant={'ghost'}
-                    onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
-                    }>
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              {formik.touched.password && formik.errors.password && <div className="error">{formik.errors.password}</div>}
+              <Input type='password' placeholder=' ' ref={passwordInputRef}/>
             </FormControl>
                     {console.log(formik)}
             <Stack isInline justifyContent='space-between' mt={4}>
@@ -148,24 +111,11 @@ const formik = useFormik({
                 <Checkbox>Ingat Saya</Checkbox>
               </Box>
               <Box>
-                <Link color={`${VARIANT_COLOR}.500`}>Lupa Kata Sandi?</Link>
+                <Link color="#C73661.500">Lupa Kata Sandi?</Link>
               </Box>
             </Stack>
 
-            <Button 
-              disabled={formik.isSubmitting} 
-              onClick={() => {
-                if (!validOnChange) {
-                  setValidOnChange(true);
-                }
-              }} 
-              type='submit' 
-              colorScheme='red'  
-              width='full' 
-              mt={4}
-            >
-              Masuk
-            </Button>
+            <Button type="submit" colorScheme='red'  width='full' mt={4}>Masuk</Button>
           </form>
         </Box>
         </Box>
@@ -173,6 +123,6 @@ const formik = useFormik({
     </Flex>
     <Footer/>
     </>
-  )
-}
+  );
+};
 export default LoginForm;
