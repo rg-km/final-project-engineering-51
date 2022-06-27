@@ -10,6 +10,7 @@ import * as React from 'react';
 import Complete from '../assets/finish.png';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
+import ResultPage from './ResultPage';
 
 const TestComplete = () =>{
 
@@ -112,23 +113,23 @@ const TestComplete = () =>{
       <Header />
       <br/>
       <Box className='test-complete' w='100%' py={16} px={36} color='black'>
-        <Flex textAlign='center' alignItems='center' flexDirection='column' gap={12}>
         <form onSubmit={handleSubmit}>
-          <Heading as='h1' size='lg'>
-            Hore! Kamu berhasil menyelesaikan seluruh tes
-          </Heading>
-          <Image w="40%" src={Complete} alt='Complete' />
-          <Text w='2xl'>
-            Sekarang kamu dapat melihat hasil dan penjelasan lebih lanjut mengenai minat 
-            dan bakat kamu dengan menekan tombol dibawah ini.
-          </Text>
-          <Box>
-            <Button type="submit" colorScheme="gray.600" backgroundColor='primary.500'>
-              LIHAT HASIL
-            </Button>
-          </Box>
-          </form>
-        </Flex>
+          <Flex textAlign='center' alignItems='center' flexDirection='column' gap={12}>
+            <Heading as='h1' size='lg'>
+              Hore! Kamu berhasil menyelesaikan seluruh tes
+            </Heading>
+            <Image w="40%" src={Complete} alt='Complete' />
+            <Text w='2xl'>
+              Sekarang kamu dapat melihat hasil dan penjelasan lebih lanjut mengenai minat 
+              dan bakat kamu dengan menekan tombol dibawah ini.
+            </Text>
+            <Box>
+              <Button type="submit" onClick={ResultPage} colorScheme="gray.600" backgroundColor='primary.500'>
+                LIHAT HASIL
+              </Button>
+            </Box>
+          </Flex>
+        </form>
       </Box>
       <Footer />
     </>

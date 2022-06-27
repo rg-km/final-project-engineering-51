@@ -11,21 +11,15 @@ import {
   Checkbox,
   Button,
 } from '@chakra-ui/react';
-import React, { useRef, useContext, useEffect} from 'react';
+import React, { useRef} from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import AuthContext from '../service/AuthContext';
 import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () =>{
   const navigate = useNavigate();
-  const authCtx = useContext(AuthContext);
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-  
-  if (authCtx.isLoggedIn) {
-    navigate("/test-opening");
-  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -50,6 +44,7 @@ export const LoginForm = () =>{
       .then((response) => {
         if(response.status === 200){
             console.log("SUCCESSS")
+            navigate("/test-opening");
             return response.json(); 
         }else if(response.status === 401){
             console.log("SOMETHING WENT WRONG")
@@ -59,11 +54,10 @@ export const LoginForm = () =>{
       .then((data) => {
         console.log(data.token);
         localStorage.setItem("token", data.token);
-        authCtx.login("token", data.token);
       })
       .catch((err) => {
         alert("Data yang anda masukkan salah");
-      });
+      })
   };
 
   return (
