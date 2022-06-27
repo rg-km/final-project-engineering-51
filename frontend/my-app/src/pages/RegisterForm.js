@@ -1,7 +1,3 @@
-import React ,{ useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import {
   Flex,
   Box,
@@ -10,71 +6,61 @@ import {
   Link,
   FormControl,
   FormLabel,
+  FormHelperText,
   Input,
-  Button,
-  InputGroup,
-  InputRightElement,
+  Button
 } from '@chakra-ui/react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
-
+import React ,{ useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
 const VARIANT_COLOR = '#C73661';
 
-const RegisterForm = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [cPassword] = useState('');
+export default function RegisterForm ()  {
+  const [Fullname,setFullname]=useState("")
+  const [Email,setEmail]=useState("")
+  const [Password,setPassword]=useState("")
+  const [cPassword, setCPassword] = useState('');
   const Navigate = useNavigate();
-  const [validOnChange, setValidOnChange] = React.useState(false);
 
-  async function doregister(values){
-    console.log('doregister');
-    let item={name: values.name, email : values.email, password : values.password}
-    let result= await fetch("http://localhost:8080/api/user/register",{
-      method:"POST",
-      body:JSON.stringify(item),
-      headers:{
-        "Content-Type":"application/json",
-        "Accept":"application/json"
-      },
-    })
-    result=await result.json()
-    localStorage.setItem("user-info",JSON.stringify(result))
-    Navigate("/")
-    setTimeout(() => {
-        formik.setSubmitting(false);
-        formik.resetForm();
-    }, 2000);
-}
-const formik = useFormik({
-    initialValues: {
-        name: '',
-        email: '',
-        password: '',
-        cPassword: '',
-    },
-    validationSchema: Yup.object({
-        name: Yup.string()
-            .required(),
-        email: Yup.string()
-            .required()
-            .email('Format email tidak cocok'),
-        password: Yup.string()
-            .required()
-            .min(6, 'Minimal 6 Karakter')
-            .matches(/[a-z]/g, 'Harus terdapat minimal 1 lowercase')
-            .matches(/[A-Z]/g, 'Harus terdapat minimal 1 uppercase')
-            .matches(/[0-9]/g, 'Harus terdapat minimal 1 number')
-            .matches(/^\S*$/, 'Tidak boleh mengandung spasi'),
-        cPassword: Yup.string()
-            .required()
-            .oneOf([Yup.ref('password')], 'Kata Sandi Tidak Cocok'),
-    }),
-    onSubmit: (values) => {
-      doregister(values);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (Password !== cPassword) {
+      alert("Kata Sandi Tidak Cocok");
+    }else if(Password.length < 6){
+      alert("Password harus lebih dari 6 karakter")
     }
-  });
+    else {
+      try {
+        let res = await axios.post(`http://localhost:8080/api/user/register`,
+          {
+            Fullname: Fullname,
+            Email: Email,
+            Password: Password,
+            Role: "student",
+          },
+          {
+            headers: {
+              Accept: "/login",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(res);
+        if (res.data.error) {
+          alert(res.data.error);
+        }else if(res.status === 200){
+          Navigate("/login")
+        }
+      } catch (error) {
+        alert(
+          "Username / Email Sudah terdaftar"
+        );
+      }
+  }
+  };
+
   return (
     <>
     <Header />
@@ -95,7 +81,7 @@ const formik = useFormik({
           boxShadow="lg"
         >
         <Box my={8} textAlign='left'>
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={handleSubmit}>
             <Box textAlign='center'>
               <Heading as='h4' size='md'>Daftar</Heading>
               <Text>
@@ -113,86 +99,54 @@ const formik = useFormik({
             <FormControl isRequired mt={4}>
               <FormLabel >Nama Lengkap</FormLabel>
               <Input 
-                name='name' 
+                type='text'
+                id='Fullname'
+                name='Fullname'
+                value={Fullname}
                 placeholder=' ' 
-                value = {formik.values.name}
-                onChange={e => formik.setFieldValue('name', e.target.value)}
-                invalid={formik.errors.name}
+                onChange={(e)=>setFullname(e.target.value)}
               />
-              {formik.touched.name && formik.errors.name && <div className="error">{formik.errors.name}</div>}
             </FormControl>
 
             <FormControl isRequired mt={4}>
               <FormLabel>Alamat Email</FormLabel>
               <Input 
-                name='email'
-                type='email' 
-                placeholder=' ' 
-                value = {formik.values.email}
-                onChange={e => formik.setFieldValue('email', e.target.value)}
-                invalid={formik.errors.email}
+                type='email'
+                id='Email' 
+                name='Email'
+                value={Email}
+                placeholder=' '
+                onChange={(e)=>setEmail(e.target.value)}
               />
-              {formik.touched.email && formik.errors.email && <div className="error">{formik.errors.email}</div>}
             </FormControl>
-
-            <FormControl id="password" isRequired mt={4}>
+            
+            <FormControl isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
-              <InputGroup>
-                <Input 
-                  name='password'
-                  type={showPassword ? 'text' : 'password' } 
-                  value = {formik.values.password}
-                  onChange={e => formik.setFieldValue('password', e.target.value)}
-                  invalid={formik.errors.password}
-                />
-                <InputRightElement h={'full'}>
-                  <Button
-                    variant={'ghost'}
-                    onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
-                    }>
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              {formik.touched.password && formik.errors.password && <div className="error">{formik.errors.password}</div>}
+              <Input 
+                id='password' 
+                type='password' 
+                name='password'
+                value={Password}
+                placeholder=' ' 
+                onChange={(e)=>setPassword(e.target.value)}
+              />
+              <FormHelperText>Minimal 6 Karakter</FormHelperText>
             </FormControl>
 
             <FormControl isRequired mt={4}>
               <FormLabel>Konfirmasi Kata Sandi</FormLabel>
-              <InputGroup>
-                <Input 
-                  name='cPassword'
-                  type={showPassword ? 'text' : 'password' } 
-                  value={cPassword}
-                  {...formik.getFieldProps('cPassword')}
-                />
-                <InputRightElement h={'full'}>
-                  <Button
-                    variant={'ghost'}
-                    onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
-                    }>
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              {formik.touched.cPassword && formik.errors.cPassword && <div className="error">{formik.errors.cPassword}</div>}
+              <Input 
+                type='password'
+                id='cPassword' 
+                name='cPassword'
+                className={cPassword}
+                placeholder=' ' 
+                value={cPassword} 
+                onChange={(e) => { setCPassword(e.target.value) }}
+              />
             </FormControl>
 
-            <Button  disabled={formik.isSubmitting} 
-              onClick={() => {
-                if (!validOnChange) {
-                  setValidOnChange(true);
-                }
-              }} 
-              type='submit' 
-              colorScheme='red'  
-              width='full' 
-              mt={4}
-            >
-              Daftar
-            </Button>
+            <Button type='submit' colorScheme='red'  width='full' mt={6}>Daftar</Button>
           </form>
         </Box>
         </Box>
@@ -202,4 +156,3 @@ const formik = useFormik({
     </>
   )
 }
-export default  (RegisterForm);
