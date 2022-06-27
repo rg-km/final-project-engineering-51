@@ -8,8 +8,11 @@ import {
   FormLabel,
   FormHelperText,
   Input,
-  Button
+  Button,
+  InputGroup,
+  InputRightElement,
 } from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import React ,{ useState } from 'react';
@@ -23,6 +26,7 @@ export default function RegisterForm ()  {
   const [Password,setPassword]=useState("")
   const [cPassword, setCPassword] = useState('');
   const Navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -122,28 +126,44 @@ export default function RegisterForm ()  {
             
             <FormControl isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
-              <Input 
-                id='password' 
-                type='password' 
-                name='password'
-                value={Password}
-                placeholder=' ' 
-                onChange={(e)=>setPassword(e.target.value)}
-              />
+              <InputGroup>
+                <Input 
+                  type={showPassword ? 'text' : 'password' } 
+                  value={Password}
+                  onChange={(e)=>setPassword(e.target.value)} 
+                />
+                <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }>
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
               <FormHelperText>Minimal 6 Karakter</FormHelperText>
             </FormControl>
 
             <FormControl isRequired mt={4}>
               <FormLabel>Konfirmasi Kata Sandi</FormLabel>
-              <Input 
-                type='password'
-                id='cPassword' 
-                name='cPassword'
-                className={cPassword}
-                placeholder=' ' 
-                value={cPassword} 
-                onChange={(e) => { setCPassword(e.target.value) }}
-              />
+              <InputGroup>
+                <Input 
+                  type={showPassword ? 'text' : 'password' } 
+                  value={cPassword}
+                  className={cPassword}
+                  onChange={(e) => { setCPassword(e.target.value) }}
+                />
+                <InputRightElement h={'full'}>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() =>
+                      setShowPassword((showPassword) => !showPassword)
+                    }>
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
             </FormControl>
 
             <Button type='submit' colorScheme='red'  width='full' mt={6}>Daftar</Button>
