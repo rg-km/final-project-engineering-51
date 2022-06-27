@@ -71,7 +71,7 @@ function TestOpening() {
             }
           </Flex>
           <Box>
-            <Link to='/test-page'>
+            <Link to='/test-page-1'>
               <Button colorScheme="gray.600" backgroundColor='primary.500'>
                 MULAI TES SEKARANG
               </Button>
