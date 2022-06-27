@@ -8,10 +8,10 @@ import (
 )
 
 type API struct {
-	usersRepo repository.UserRepository
-	soalRepo repository.SoalRepository
+	usersRepo  repository.UserRepository
+	soalRepo   repository.SoalRepository
 	resultRepo repository.ResultRepository
-	mux             *http.ServeMux
+	mux        *http.ServeMux
 }
 
 func NewAPI(usersRepo repository.UserRepository, soalRepo repository.SoalRepository, resultRepo repository.ResultRepository) API {

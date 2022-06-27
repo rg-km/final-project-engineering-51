@@ -31,9 +31,8 @@ const ResultPage = () =>{
       });
   };
 
+  console.log(result);
   useEffect(()=> fetchResult(),[]);
-
-  // if (!result) return null;
 
   return(
     <>
