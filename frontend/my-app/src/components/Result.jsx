@@ -64,7 +64,7 @@ return(
                 </Box>
                 <Box>
                     <Image borderRadius="100%" src={Complete} />
-                    <Text>Konvensional:</Text>
+                    <Text>Convensional:</Text>
                     <Text>{C} %</Text>
                 </Box>
             </Box>

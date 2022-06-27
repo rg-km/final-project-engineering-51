@@ -15,7 +15,7 @@ import {
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import React ,{ useState } from 'react';
+import React ,{ useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 const VARIANT_COLOR = '#C73661';
@@ -25,44 +25,58 @@ export default function RegisterForm ()  {
   const [Email,setEmail]=useState("")
   const [Password,setPassword]=useState("")
   const [cPassword, setCPassword] = useState('');
-  const Navigate = useNavigate();
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
+  const [cPasswordClass, setCPasswordClass] = useState('form-control');
+  const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const Navigate = useNavigate();
+  
+  useEffect(() => {
+    if (isCPasswordDirty) {
+        if (Password === cPassword) {
+            setShowErrorMessage(false);
+            setCPasswordClass('form-control is-valid')
+        } else {
+            setShowErrorMessage(true)
+            setCPasswordClass('form-control is-invalid')
+        }
+    }
+  }, [cPassword, isCPasswordDirty, Password]);
 
+  const handleCPassword = (e) => {
+    setCPassword(e.target.value);
+    setIsCPasswordDirty(true);
+  }
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (Password !== cPassword) {
-      alert("Kata Sandi Tidak Cocok");
-    }else if(Password.length < 6){
-      alert("Password harus lebih dari 6 karakter")
-    }
-    else {
-      try {
-        let res = await axios.post(`http://localhost:8080/api/user/register`,
-          {
-            Fullname: Fullname,
-            Email: Email,
-            Password: Password,
-            Role: "student",
+    try {
+      let res = await axios.post(`http://localhost:8080/api/user/register`,
+        {
+          Fullname: Fullname,
+          Email: Email,
+          Password: Password,
+          Role: "student",
+        },
+        {
+          headers: {
+            Accept: "/",
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              Accept: "/login",
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log(res);
-        if (res.data.error) {
-          alert(res.data.error);
-        }else if(res.status === 200){
-          Navigate("/login")
         }
-      } catch (error) {
-        alert(
-          "Username / Email Sudah terdaftar"
-        );
+      );
+      console.log(res);
+      if (res.data.error) {
+        alert(res.data.error);
+      }else if(res.status === 200){
+        alert("yeay! kamu berhasil daftar. silahkan login...");
+        Navigate("/login");
       }
-  }
+    } catch (error) {
+      alert(
+        "Username / Email Sudah terdaftar"
+      );
+    }
   };
 
   return (
@@ -107,7 +121,7 @@ export default function RegisterForm ()  {
                 id='Fullname'
                 name='Fullname'
                 value={Fullname}
-                placeholder=' ' 
+                placeholder='masukkan nama panjang anda' 
                 onChange={(e)=>setFullname(e.target.value)}
               />
             </FormControl>
@@ -119,52 +133,73 @@ export default function RegisterForm ()  {
                 id='Email' 
                 name='Email'
                 value={Email}
-                placeholder=' '
+                placeholder='masukkan email anda'
                 onChange={(e)=>setEmail(e.target.value)}
               />
             </FormControl>
             
             <FormControl isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
-              <InputGroup>
-                <Input 
-                  type={showPassword ? 'text' : 'password' } 
-                  value={Password}
-                  onChange={(e)=>setPassword(e.target.value)} 
-                />
-                <InputRightElement h={'full'}>
-                  <Button
-                    variant={'ghost'}
-                    onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
-                    }>
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-              <FormHelperText>Minimal 6 Karakter</FormHelperText>
+              <Input 
+                id='password' 
+                type='password' 
+                name='password'
+                value={Password}
+                placeholder='masukkan password'
+                onChange={(e)=>setPassword(e.target.value)}
+              />
             </FormControl>
+            
+              //<InputGroup>
+                //<Input 
+                  //type={showPassword ? 'text' : 'password' } 
+                  //value={Password}
+                  //onChange={(e)=>setPassword(e.target.value)} 
+                ///>
+                //<InputRightElement h={'full'}>
+                  //<Button
+                    //variant={'ghost'}
+                    //onClick={() =>
+                      //setShowPassword((showPassword) => !showPassword)
+                    //}>
+                    //{showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  //</Button>
+                //</InputRightElement>
+              //</InputGroup>
+             // <FormHelperText>Minimal 6 Karakter</FormHelperText>
 
             <FormControl isRequired mt={4}>
               <FormLabel>Konfirmasi Kata Sandi</FormLabel>
-              <InputGroup>
-                <Input 
-                  type={showPassword ? 'text' : 'password' } 
-                  value={cPassword}
-                  className={cPassword}
-                  onChange={(e) => { setCPassword(e.target.value) }}
-                />
-                <InputRightElement h={'full'}>
-                  <Button
-                    variant={'ghost'}
-                    onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
-                    }>
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
+              <Input 
+                type='password'
+                id='cPassword' 
+                name='cPassword'
+                className={cPasswordClass}
+                placeholder='masukkan password konfirmasi' 
+                value={cPassword} 
+                onChange={(e) => { setCPassword(e.target.value) }}
+              />
+              
+              //<InputGroup>
+                //<Input 
+                  //type={showPassword ? 'text' : 'password' } 
+                  //value={cPassword}
+                  //className={cPassword}
+                  //onChange={(e) => { setCPassword(e.target.value) }}
+                ///>
+                //<InputRightElement h={'full'}>
+                  //<Button
+                    //variant={'ghost'}
+                    //onClick={() =>
+                      //setShowPassword((showPassword) => !showPassword)
+                    //}>
+                    //{showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  //</Button>
+                //</InputRightElement>
+              //</InputGroup>
+              
             </FormControl>
+            {showErrorMessage && isCPasswordDirty ? <div><a style={{color:"red"}}>Kata Sandi Tidak Cocok </a></div> : ''}
 
             <Button type='submit' colorScheme='red'  width='full' mt={6}>Daftar</Button>
           </form>

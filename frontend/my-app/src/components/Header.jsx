@@ -52,12 +52,16 @@ const Header = () =>{
 
     return(
     <>
-        <header  z-index="10" as="header" position="fixed">
+        <header zIndex="1" as="header" position="fixed">
             <Box boxShadow='2xl' as="header" position="fixed" w="100%" backgroundColor="white">
                 <Box display="flex" alignItems="center" justifyContent="space-between" ml={70} mr={70}>
                     <Box>
-                        <Text fontWeight="bold" color="#C73661" fontSize='5xl'>KenaliAku</Text>
+                        <Text as="button" onClick={()=>navigate('/')} fontWeight="bold" color="#C73661" fontSize='5xl'>KenaliAku</Text>
                     </Box>
+                    <Box display="flex" alignItems="center">
+                            <Link href="#banner" mr={5} colorScheme="gray.600" fontSize="1xl" >Beranda</Link>
+                            <Link href="#about" mr={5} colorScheme="gray.600" fontSize="1xl" >Tentang</Link>
+                            <Link href="#service" mr={5} colorScheme="gray.600" fontSize="1xl" >Layanan</Link>
                         {
                         localStorage.getItem('token') ?
                         <>
@@ -107,7 +111,8 @@ const Header = () =>{
                             </Button>
                         </Box>
                         </>
-                    }
+                        }
+                    </Box>
                 </Box>
             </Box>
         </header>

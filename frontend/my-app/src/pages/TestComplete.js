@@ -7,6 +7,7 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Complete from '../assets/finish.png';
 import Footer from '../components/Footer';
