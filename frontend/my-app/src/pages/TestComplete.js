@@ -7,6 +7,7 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import Complete from '../assets/finish.png';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
@@ -14,6 +15,7 @@ import ResultPage from './ResultPage';
 
 const TestComplete = () =>{
 
+  // const answers = useStore((state) => state.answers);
   const handleSubmit = (event) => {
     event.preventDefault();
     let auth = localStorage.getItem("token");
@@ -124,9 +126,11 @@ const TestComplete = () =>{
               dan bakat kamu dengan menekan tombol dibawah ini.
             </Text>
             <Box>
-              <Button type="submit" onClick={ResultPage} colorScheme="gray.600" backgroundColor='primary.500'>
-                LIHAT HASIL
-              </Button>
+              <Link to={'/result'}>
+                <Button type="submit" colorScheme="gray.600" backgroundColor='primary.500'>
+                  LIHAT HASIL
+                </Button>
+              </Link>
             </Box>
           </Flex>
         </form>

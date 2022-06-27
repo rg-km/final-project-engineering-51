@@ -10,8 +10,6 @@ import {
   Stack,
   Checkbox,
   Button,
-  InputGroup,
-  InputRightElement,
 } from '@chakra-ui/react';
 import React, { useRef} from 'react';
 import Header from '../components/Header';
@@ -96,16 +94,16 @@ export const LoginForm = () =>{
                 </Link>
               </Text>
             </Box>
-            <FormControl z-index="-1" isRequired mt={4}>
+            <FormControl isRequired mt={4}>
               <FormLabel>Alamat Email</FormLabel>
               <Input type='email' placeholder=' ' ref={emailInputRef}/>
             </FormControl>
 
-            <FormControl id="password"  z-index="-1" isRequired mt={4}>
+            <FormControl isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
               <Input type='password' placeholder=' ' ref={passwordInputRef}/>
             </FormControl>
-                    {console.log(formik)}
+            
             <Stack isInline justifyContent='space-between' mt={4}>
               <Box>
                 <Checkbox>Ingat Saya</Checkbox>

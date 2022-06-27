@@ -6,15 +6,13 @@ import {
   Link,
   FormControl,
   FormLabel,
+  FormHelperText,
   Input,
-  Button,
-  InputGroup,
-  InputRightElement,
+  Button
 } from '@chakra-ui/react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import React ,{ useState, useEffect } from 'react';
+import React ,{ useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 const VARIANT_COLOR = '#C73661';
@@ -24,74 +22,43 @@ export default function RegisterForm ()  {
   const [Email,setEmail]=useState("")
   const [Password,setPassword]=useState("")
   const [cPassword, setCPassword] = useState('');
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const [cPasswordClass, setCPasswordClass] = useState('form-control');
-  const [isCPasswordDirty, setIsCPasswordDirty] = useState(false);
   const Navigate = useNavigate();
-  const [validOnChange, setValidOnChange] = React.useState(false);
-
-  useEffect(() => {
-    if (isCPasswordDirty) {
-        if (Password === cPassword) {
-            setShowErrorMessage(false);
-            setCPasswordClass('form-control is-valid')
-        } else {
-            setShowErrorMessage(true)
-            setCPasswordClass('form-control is-invalid')
-        }
-    }
-  }, [cPassword, isCPasswordDirty, Password]);
-
-  const handleCPassword = (e) => {
-    setCPassword(e.target.value);
-    setIsCPasswordDirty(true);
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      let res = await axios.post(`http://localhost:8080/api/user/register`,
-        {
-          Fullname: Fullname,
-          Email: Email,
-          Password: Password,
-          Role: "student",
-        },
-        {
-          headers: {
-            Accept: "/",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(res);
-      if (res.data.error) {
-        alert(res.data.error);
-      }else if(res.status === 200){
-        Navigate("/")
-      }
-    } catch (error) {
-      alert(
-        "Username / Email Sudah terdaftar"
-      );
+    if (Password !== cPassword) {
+      alert("Kata Sandi Tidak Cocok");
+    }else if(Password.length < 6){
+      alert("Password harus lebih dari 6 karakter")
     }
-
-
-
-    // let item={name,email,password}
-    // console.warn(item)
-
-    // let result= await fetch("http://localhost:8080/api/user/register",{
-    //   method:"POST",
-    //   body:JSON.stringify(item),
-    //   headers:{
-    //     "Content-Type":"application/json",
-    //     "Accept":"application/json"
-    //   },
-    // })
-    // result=await result.json()
-    // localStorage.setItem("user-info",JSON.stringify(result))
-    // Navigate("/")
+    else {
+      try {
+        let res = await axios.post(`http://localhost:8080/api/user/register`,
+          {
+            Fullname: Fullname,
+            Email: Email,
+            Password: Password,
+            Role: "student",
+          },
+          {
+            headers: {
+              Accept: "/login",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(res);
+        if (res.data.error) {
+          alert(res.data.error);
+        }else if(res.status === 200){
+          Navigate("/login")
+        }
+      } catch (error) {
+        alert(
+          "Username / Email Sudah terdaftar"
+        );
+      }
+  }
   };
 
   return (
@@ -136,10 +103,9 @@ export default function RegisterForm ()  {
                 id='Fullname'
                 name='Fullname'
                 value={Fullname}
-                placeholder='masukkan nama panjang anda' 
+                placeholder=' ' 
                 onChange={(e)=>setFullname(e.target.value)}
               />
-              {formik.touched.name && formik.errors.name && <div className="error">{formik.errors.name}</div>}
             </FormControl>
 
             <FormControl isRequired mt={4}>
@@ -149,22 +115,22 @@ export default function RegisterForm ()  {
                 id='Email' 
                 name='Email'
                 value={Email}
-                placeholder='masukkan email anda'
+                placeholder=' '
                 onChange={(e)=>setEmail(e.target.value)}
               />
-              {formik.touched.email && formik.errors.email && <div className="error">{formik.errors.email}</div>}
             </FormControl>
-
-            <FormControl id="password" isRequired mt={4}>
+            
+            <FormControl isRequired mt={4}>
               <FormLabel>Kata Sandi</FormLabel>
               <Input 
                 id='password' 
                 type='password' 
                 name='password'
                 value={Password}
-                placeholder='masukkan password' 
+                placeholder=' ' 
                 onChange={(e)=>setPassword(e.target.value)}
               />
+              <FormHelperText>Minimal 6 Karakter</FormHelperText>
             </FormControl>
 
             <FormControl isRequired mt={4}>
@@ -173,13 +139,12 @@ export default function RegisterForm ()  {
                 type='password'
                 id='cPassword' 
                 name='cPassword'
-                className={cPasswordClass}
-                placeholder='masukkan password konfirmasi' 
+                className={cPassword}
+                placeholder=' ' 
                 value={cPassword} 
-                onChange={handleCPassword}
+                onChange={(e) => { setCPassword(e.target.value) }}
               />
             </FormControl>
-            {showErrorMessage && isCPasswordDirty ? <div><a style={{color:"red"}}>Kata Sandi Tidak Cocok </a></div> : ''}
 
             <Button type='submit' colorScheme='red'  width='full' mt={6}>Daftar</Button>
           </form>
